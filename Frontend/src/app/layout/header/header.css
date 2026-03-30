@@ -1,5 +1,3 @@
-/* Cabecera — sticky, accesible, estados de foco y ruta activa */
-
 :host {
   display: block;
   position: sticky;

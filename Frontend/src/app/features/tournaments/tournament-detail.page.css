@@ -1,0 +1,222 @@
+.tdetail {
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.tdetail__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.tdetail__crumb {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tdetail__crumb-link {
+  color: var(--color-brand-700);
+  text-decoration: none;
+}
+
+.tdetail__crumb-link:hover {
+  text-decoration: underline;
+}
+
+.tdetail__crumb-sep {
+  opacity: 0.5;
+}
+
+.tdetail__crumb-current {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.tdetail__state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  color: var(--color-text-muted);
+}
+
+.tdetail__spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-brand-700);
+  border-radius: 50%;
+  animation: tdetail-spin 0.7s linear infinite;
+}
+
+@keyframes tdetail-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tdetail__alert {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, #b91c1c 35%, transparent);
+  background: color-mix(in srgb, #b91c1c 8%, transparent);
+  color: var(--color-text);
+}
+
+.tdetail__alert-actions {
+  margin: var(--space-4) 0 0;
+}
+
+.tdetail__article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.tdetail__hero {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .tdetail__hero {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.tdetail__media {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 16 / 9;
+  background: var(--color-brand-100);
+}
+
+.tdetail__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tdetail__hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tdetail__badge {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-brand-700);
+}
+
+.tdetail__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.15;
+}
+
+.tdetail__sub {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+}
+
+.tdetail__dates {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.tdetail__dash {
+  margin: 0 var(--space-2);
+  opacity: 0.5;
+}
+
+.tdetail__grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .tdetail__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.tdetail__panel {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.tdetail__h2 {
+  margin: 0 0 var(--space-3);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.tdetail__p {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.tdetail__p--small {
+  margin-top: var(--space-3);
+  font-size: 0.9375rem;
+}
+
+.tdetail__link {
+  color: var(--color-brand-700);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tdetail__link:hover {
+  text-decoration: underline;
+}
+
+.tdetail__muted {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.tdetail__footer {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.tdetail__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-brand-700), var(--color-brand-800));
+  box-shadow: var(--shadow-sm);
+}
+
+.tdetail__btn--ghost {
+  background: var(--color-surface-elevated);
+  color: var(--color-brand-800);
+  border: 1px solid var(--color-border);
+}

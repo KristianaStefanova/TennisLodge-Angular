@@ -1,0 +1,95 @@
+<div class="container page">
+  <div class="header">
+    <h1 class="title">New tournament</h1>
+    <p class="subtitle">Fill out the details to create a tournament.</p>
+  </div>
+
+  @if (error()) {
+    <div class="alert" role="alert">
+      {{ error() }}
+    </div>
+  }
+
+  <form class="form" (ngSubmit)="submit()">
+    <div class="grid">
+      <label class="field">
+        <span class="label">Name</span>
+        <input
+          class="control"
+          name="tournamentName"
+          required
+          [(ngModel)]="model.tournamentName"
+          autocomplete="off"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Organizer</span>
+        <input class="control" name="tournamentOrganizer" [(ngModel)]="model.tournamentOrganizer" />
+      </label>
+
+      <label class="field">
+        <span class="label">Category</span>
+        <input class="control" name="tournamentCategory" [(ngModel)]="model.tournamentCategory" />
+      </label>
+
+      <label class="field">
+        <span class="label">Location</span>
+        <input class="control" name="tournamentLocation" [(ngModel)]="model.tournamentLocation" />
+      </label>
+
+      <label class="field">
+        <span class="label">Surface</span>
+        <select class="control" name="tournamentSurface" [(ngModel)]="model.tournamentSurface">
+          <option value="Hard">Hard</option>
+          <option value="Clay">Clay</option>
+          <option value="Grass">Grass</option>
+          <option value="Carpet">Carpet</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Contact</span>
+        <input class="control" name="tournamentContact" [(ngModel)]="model.tournamentContact" />
+      </label>
+
+      <label class="field">
+        <span class="label">Email</span>
+        <input class="control" name="tournamentEmail" type="email" [(ngModel)]="model.tournamentEmail" />
+      </label>
+
+      <label class="field">
+        <span class="label">Image URL</span>
+        <input class="control" name="tournamentImageUrl" [(ngModel)]="model.tournamentImageUrl" />
+      </label>
+
+      <label class="field">
+        <span class="label">Start date</span>
+        <input
+          class="control"
+          name="tournamentStartDate"
+          type="date"
+          (change)="setStartDate($any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">End date</span>
+        <input
+          class="control"
+          name="tournamentEndDate"
+          type="date"
+          (change)="setEndDate($any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : 'Create tournament' }}
+      </button>
+      <a class="btn ghost" routerLink="/tournaments">Cancel</a>
+    </div>
+  </form>
+</div>
+

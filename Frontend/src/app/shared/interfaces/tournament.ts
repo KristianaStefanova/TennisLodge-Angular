@@ -12,4 +12,6 @@ export interface Tournament {
     tournamentEmail: string;
     isDeleted: boolean;
     tournamentImageUrl: string;
+    /** Present when returned from API (for edit/delete ownership checks later). */
+    ownerId?: string;
 }

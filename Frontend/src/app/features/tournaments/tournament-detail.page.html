@@ -1,0 +1,80 @@
+<section class="tdetail" aria-label="Tournament details">
+  <div class="container tdetail__inner">
+    <nav class="tdetail__crumb" aria-label="Breadcrumb">
+      <a routerLink="/" class="tdetail__crumb-link">Home</a>
+      <span class="tdetail__crumb-sep" aria-hidden="true">/</span>
+      <a routerLink="/tournaments" class="tdetail__crumb-link">Tournaments</a>
+      @if (tournament(); as t) {
+        <span class="tdetail__crumb-sep" aria-hidden="true">/</span>
+        <span class="tdetail__crumb-current">{{ t.tournamentName }}</span>
+      }
+    </nav>
+
+    @if (loading()) {
+      <div class="tdetail__state" role="status" aria-live="polite">
+        <span class="tdetail__spinner" aria-hidden="true"></span>
+        Loading…
+      </div>
+    } @else if (error()) {
+      <div class="tdetail__alert" role="alert">
+        {{ error() }}
+        <p class="tdetail__alert-actions">
+          <a routerLink="/tournaments" class="tdetail__btn">Back to catalog</a>
+        </p>
+      </div>
+    } @else if (tournament(); as t) {
+      <article class="tdetail__article">
+        <header class="tdetail__hero">
+          @if (t.tournamentImageUrl) {
+            <div class="tdetail__media">
+              <img
+                [src]="t.tournamentImageUrl"
+                [alt]="'Image for ' + t.tournamentName"
+                class="tdetail__img"
+                width="960"
+                height="540"
+              />
+            </div>
+          }
+          <div class="tdetail__hero-text">
+            <p class="tdetail__badge">{{ t.tournamentCategory }} · {{ t.tournamentSurface }}</p>
+            <h1 class="tdetail__title">{{ t.tournamentName }}</h1>
+            <p class="tdetail__sub">{{ t.tournamentLocation }}</p>
+            <p class="tdetail__dates">
+              <time [attr.datetime]="t.tournamentStartDate.toISOString()">
+                {{ t.tournamentStartDate | date: 'longDate' }}
+              </time>
+              <span class="tdetail__dash">–</span>
+              <time [attr.datetime]="t.tournamentEndDate.toISOString()">
+                {{ t.tournamentEndDate | date: 'longDate' }}
+              </time>
+            </p>
+          </div>
+        </header>
+
+        <div class="tdetail__grid">
+          <section class="tdetail__panel" aria-labelledby="tdetail-org">
+            <h2 id="tdetail-org" class="tdetail__h2">Organizer</h2>
+            <p class="tdetail__p">{{ t.tournamentOrganizer }}</p>
+          </section>
+
+          <section class="tdetail__panel" aria-labelledby="tdetail-contact">
+            <h2 id="tdetail-contact" class="tdetail__h2">Contact</h2>
+            @if (t.tournamentEmail) {
+              <a class="tdetail__link" [href]="'mailto:' + t.tournamentEmail">
+                {{ t.tournamentEmail }}
+              </a>
+            } @else {
+              <p class="tdetail__muted">No email provided.</p>
+            }
+            <p class="tdetail__p tdetail__p--small">{{ t.tournamentContact }}</p>
+          </section>
+        </div>
+
+        <footer class="tdetail__footer">
+          <a routerLink="/tournaments" class="tdetail__btn tdetail__btn--ghost">← All tournaments</a>
+        </footer>
+      </article>
+    }
+  </div>
+</section>

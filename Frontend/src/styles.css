@@ -1,11 +1,3 @@
-/* --------------------------------------------------------------------------
-   Entrada global de estilos — orden importa la cascada
-   1. reset     — base y accesibilidad
-   2. layout    — tokens y contenedores
-   3. typography — texto y jerarquía
-   4. responsive — gutters y media queries globales
-   -------------------------------------------------------------------------- */
-
 @import url("../styles/reset.css");
 @import url("../styles/layout.css");
 @import url("../styles/typography.css");

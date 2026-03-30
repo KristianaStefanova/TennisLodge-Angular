@@ -1,0 +1,29 @@
+<article class="tcard">
+  <a [routerLink]="['/tournaments', tournament()._id]" class="tcard__link">
+    <div class="tcard__media">
+      @if (tournament().tournamentImageUrl) {
+        <img
+          [src]="tournament().tournamentImageUrl"
+          [alt]="'Image for ' + tournament().tournamentName"
+          class="tcard__img"
+          loading="lazy"
+          width="640"
+          height="360"
+        />
+      } @else {
+        <div class="tcard__placeholder" aria-hidden="true">
+          <span class="tcard__placeholder-text">Tennis Lodge</span>
+        </div>
+      }
+    </div>
+    <div class="tcard__body">
+      <p class="tcard__meta">
+        {{ tournament().tournamentStartDate | date: 'mediumDate' }} · {{ tournament().tournamentSurface }}
+      </p>
+      <h2 class="tcard__name">{{ tournament().tournamentName }}</h2>
+      <p class="tcard__loc">{{ tournament().tournamentLocation }}</p>
+      <p class="tcard__org">{{ tournament().tournamentOrganizer }}</p>
+      <span class="tcard__more">View details</span>
+    </div>
+  </a>
+</article>

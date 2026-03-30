@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Tournament } from '../../shared/interfaces/tournament';
-import { TournamentsApi } from './tournaments.api';
+import { TournamentsApi } from '../../core/services/tournaments.service';
 
 @Component({
   selector: 'app-tournament-new-page',
@@ -15,6 +15,8 @@ import { TournamentsApi } from './tournaments.api';
 export class TournamentNewPage {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
+  private readonly api = inject(TournamentsApi);
+  private readonly router = inject(Router);
 
   model: Omit<Tournament, '_id' | 'createdAt'> = {
     tournamentName: '',
@@ -29,11 +31,6 @@ export class TournamentNewPage {
     isDeleted: false,
     tournamentImageUrl: '',
   };
-
-  constructor(
-    private readonly api: TournamentsApi,
-    private readonly router: Router,
-  ) {}
 
   setStartDate(value: string): void {
     const d = new Date(value);
@@ -75,9 +72,15 @@ export class TournamentNewPage {
         this.saving.set(false);
         await this.router.navigateByUrl('/tournaments');
       },
-      error: (e) => {
+      error: (e: unknown) => {
         this.saving.set(false);
-        const msg = typeof e?.error?.message === 'string' ? e.error.message : e?.message;
+        const err = e as { error?: { message?: unknown }; message?: unknown };
+        const msg =
+          typeof err?.error?.message === 'string'
+            ? err.error.message
+            : typeof err?.message === 'string'
+              ? err.message
+              : null;
         this.error.set(msg || 'Could not create tournament. Make sure you are logged in.');
       },
     });
