@@ -1,0 +1,41 @@
+<header class="site-header" role="banner">
+  <div class="mini-navbar-wrap site-header__top">
+    <a routerLink="/" class="logo-link" aria-label="Tennis Lodge — Home">
+      <span class="logo-wrap">
+        <img
+          class="header-logo"
+          src="../../images/logo.png"
+          alt=""
+          width="40"
+          height="40"
+        />
+        <span class="logo">Tennis Lodge</span>
+      </span>
+    </a>
+
+    <nav class="mini-navbar" aria-label="Account">
+      <ul>
+        <li>
+          <a routerLink="/login" class="mini-navbar__link mini-navbar__link--ghost">Login</a>
+        </li>
+        <li>
+          <a routerLink="/register" class="mini-navbar__link mini-navbar__link--cta">Register</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <nav class="site-header__primary" aria-label="Primary">
+    <ul>
+      <li>
+        <a routerLink="/" class="site-header__nav-link" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      </li>
+      <li>
+        <a routerLink="/tournaments" class="site-header__nav-link" routerLinkActive="is-active">Tournaments</a>
+      </li>
+      <li>
+        <a routerLink="/accommodations" class="site-header__nav-link" routerLinkActive="is-active">Accommodations</a>
+      </li>
+    </ul>
+  </nav>
+</header>

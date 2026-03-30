@@ -1,0 +1,37 @@
+:root {
+  --container-gutter: var(--space-4);
+}
+
+@media (min-width: 36rem) {
+  :root {
+    --container-gutter: var(--space-6);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --container-gutter: var(--space-8);
+  }
+}
+
+@media (min-width: 48rem) {
+  .container--narrow {
+    max-width: 48rem;
+  }
+
+  .container--wide {
+    max-width: min(90rem, 100% - 2 * var(--container-gutter));
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+  }
+}
