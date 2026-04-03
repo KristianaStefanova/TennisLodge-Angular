@@ -220,3 +220,17 @@
   color: var(--color-brand-800);
   border: 1px solid var(--color-border);
 }
+
+.tdetail__sep {
+  margin: 0 0.35em;
+  opacity: 0.65;
+}
+
+.tdetail__list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.tdetail__list li {
+  margin-bottom: var(--space-2);
+}

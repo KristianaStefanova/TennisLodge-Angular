@@ -11,6 +11,7 @@
   }
 
   <form class="form" (ngSubmit)="submit()">
+    <h2 class="section-title">General</h2>
     <div class="grid">
       <label class="field">
         <span class="label">Name</span>
@@ -34,20 +35,165 @@
       </label>
 
       <label class="field">
-        <span class="label">Location</span>
-        <input class="control" name="tournamentLocation" [(ngModel)]="model.tournamentLocation" />
-      </label>
-
-      <label class="field">
         <span class="label">Surface</span>
         <select class="control" name="tournamentSurface" [(ngModel)]="model.tournamentSurface">
-          <option value="Hard">Hard</option>
-          <option value="Clay">Clay</option>
-          <option value="Grass">Grass</option>
-          <option value="Carpet">Carpet</option>
+          @for (opt of surfaceOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+          }
         </select>
       </label>
 
+      <label class="field">
+        <span class="label">Tournament director</span>
+        <input class="control" name="tournamentDirector" [(ngModel)]="model.tournamentDirector" />
+      </label>
+
+      <label class="field">
+        <span class="label">Official ball</span>
+        <input class="control" name="officialBall" [(ngModel)]="model.officialBall" />
+      </label>
+
+      <label class="field">
+        <span class="label">Prize money (optional)</span>
+        <input class="control" name="tournamentPrize" [(ngModel)]="model.tournamentPrize" />
+      </label>
+    </div>
+
+    <h2 class="section-title">Location</h2>
+    <div class="grid">
+      <label class="field">
+        <span class="label">Country</span>
+        <input class="control" name="tournamentCountry" [(ngModel)]="model.tournamentCountry" />
+      </label>
+
+      <label class="field">
+        <span class="label">City</span>
+        <input class="control" name="tournamentCity" [(ngModel)]="model.tournamentCity" />
+      </label>
+
+      <label class="field field--full">
+        <span class="label">Venue / address</span>
+        <input class="control" name="tournamentLocation" [(ngModel)]="model.tournamentLocation" />
+      </label>
+    </div>
+
+    <h2 class="section-title">Dates</h2>
+    <div class="grid">
+      <label class="field">
+        <span class="label">Tournament start</span>
+        <input
+          class="control"
+          name="tournamentStartDate"
+          type="date"
+          [value]="formatDateInput(model.tournamentStartDate)"
+          (change)="setDateField('tournamentStartDate', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Tournament end</span>
+        <input
+          class="control"
+          name="tournamentEndDate"
+          type="date"
+          [value]="formatDateInput(model.tournamentEndDate)"
+          (change)="setDateField('tournamentEndDate', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Entry deadline</span>
+        <input
+          class="control"
+          name="entryDeadline"
+          type="date"
+          [value]="formatDateInput(model.entryDeadline)"
+          (change)="setDateField('entryDeadline', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Withdrawal deadline</span>
+        <input
+          class="control"
+          name="withdrawalDeadline"
+          type="date"
+          [value]="formatDateInput(model.withdrawalDeadline)"
+          (change)="setDateField('withdrawalDeadline', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Singles qualifying sign-in (date &amp; time)</span>
+        <input
+          class="control"
+          name="singlesQualifyingSignIn"
+          type="datetime-local"
+          step="60"
+          [value]="formatDateTimeLocal(model.singlesQualifyingSignIn)"
+          (change)="setDateTimeField('singlesQualifyingSignIn', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Singles main draw sign-in (date &amp; time)</span>
+        <input
+          class="control"
+          name="singlesMainDrawSignIn"
+          type="datetime-local"
+          step="60"
+          [value]="formatDateTimeLocal(model.singlesMainDrawSignIn)"
+          (change)="setDateTimeField('singlesMainDrawSignIn', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">First day singles qualifying</span>
+        <input
+          class="control"
+          name="firstDaySinglesQualifying"
+          type="date"
+          [value]="formatDateInput(model.firstDaySinglesQualifying)"
+          (change)="setDateField('firstDaySinglesQualifying', $any($event.target).value)"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">First day singles main draw</span>
+        <input
+          class="control"
+          name="firstDaySinglesMainDraw"
+          type="date"
+          [value]="formatDateInput(model.firstDaySinglesMainDraw)"
+          (change)="setDateField('firstDaySinglesMainDraw', $any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <h2 class="section-title">Draw sizes</h2>
+    <div class="grid">
+      <label class="field">
+        <span class="label">Singles main draw size</span>
+        <input class="control" name="singlesMainDrawSize" [(ngModel)]="model.singlesMainDrawSize" />
+      </label>
+
+      <label class="field">
+        <span class="label">Singles qualifying draw size (optional)</span>
+        <input
+          class="control"
+          name="singlesQualifyingDrawSize"
+          [(ngModel)]="model.singlesQualifyingDrawSize"
+        />
+      </label>
+
+      <label class="field">
+        <span class="label">Doubles main draw size (optional)</span>
+        <input class="control" name="doublesMainDrawSize" [(ngModel)]="model.doublesMainDrawSize" />
+      </label>
+    </div>
+
+    <h2 class="section-title">Contact &amp; image</h2>
+    <div class="grid">
       <label class="field">
         <span class="label">Contact</span>
         <input class="control" name="tournamentContact" [(ngModel)]="model.tournamentContact" />
@@ -58,29 +204,9 @@
         <input class="control" name="tournamentEmail" type="email" [(ngModel)]="model.tournamentEmail" />
       </label>
 
-      <label class="field">
+      <label class="field field--full">
         <span class="label">Image URL</span>
         <input class="control" name="tournamentImageUrl" [(ngModel)]="model.tournamentImageUrl" />
-      </label>
-
-      <label class="field">
-        <span class="label">Start date</span>
-        <input
-          class="control"
-          name="tournamentStartDate"
-          type="date"
-          (change)="setStartDate($any($event.target).value)"
-        />
-      </label>
-
-      <label class="field">
-        <span class="label">End date</span>
-        <input
-          class="control"
-          name="tournamentEndDate"
-          type="date"
-          (change)="setEndDate($any($event.target).value)"
-        />
       </label>
     </div>
 
@@ -92,4 +218,3 @@
     </div>
   </form>
 </div>
-

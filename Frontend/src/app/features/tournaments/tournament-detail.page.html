@@ -39,7 +39,13 @@
           <div class="tdetail__hero-text">
             <p class="tdetail__badge">{{ t.tournamentCategory }} · {{ t.tournamentSurface }}</p>
             <h1 class="tdetail__title">{{ t.tournamentName }}</h1>
-            <p class="tdetail__sub">{{ t.tournamentLocation }}</p>
+            <p class="tdetail__sub">
+              @if (t.tournamentCity || t.tournamentCountry) {
+                {{ t.tournamentCity }}{{ t.tournamentCity && t.tournamentCountry ? ', ' : '' }}{{ t.tournamentCountry }}
+                <span class="tdetail__sep">·</span>
+              }
+              {{ t.tournamentLocation }}
+            </p>
             <p class="tdetail__dates">
               <time [attr.datetime]="t.tournamentStartDate.toISOString()">
                 {{ t.tournamentStartDate | date: 'longDate' }}
@@ -56,6 +62,15 @@
           <section class="tdetail__panel" aria-labelledby="tdetail-org">
             <h2 id="tdetail-org" class="tdetail__h2">Organizer</h2>
             <p class="tdetail__p">{{ t.tournamentOrganizer }}</p>
+            @if (t.tournamentDirector) {
+              <p class="tdetail__p tdetail__p--small"><strong>Director:</strong> {{ t.tournamentDirector }}</p>
+            }
+            @if (t.officialBall) {
+              <p class="tdetail__p tdetail__p--small"><strong>Official ball:</strong> {{ t.officialBall }}</p>
+            }
+            @if (t.tournamentPrize) {
+              <p class="tdetail__p tdetail__p--small"><strong>Prize:</strong> {{ t.tournamentPrize }}</p>
+            }
           </section>
 
           <section class="tdetail__panel" aria-labelledby="tdetail-contact">
@@ -68,6 +83,35 @@
               <p class="tdetail__muted">No email provided.</p>
             }
             <p class="tdetail__p tdetail__p--small">{{ t.tournamentContact }}</p>
+          </section>
+
+          <section class="tdetail__panel" aria-labelledby="tdetail-deadlines">
+            <h2 id="tdetail-deadlines" class="tdetail__h2">Deadlines &amp; schedule</h2>
+            <ul class="tdetail__list">
+              <li><strong>Entry deadline:</strong> {{ t.entryDeadline | date: 'longDate' }}</li>
+              <li><strong>Withdrawal deadline:</strong> {{ t.withdrawalDeadline | date: 'longDate' }}</li>
+              <li>
+                <strong>Singles qualifying sign-in:</strong>
+                {{ t.singlesQualifyingSignIn | date: 'medium' }}
+              </li>
+              <li>
+                <strong>Singles main draw sign-in:</strong>
+                {{ t.singlesMainDrawSignIn | date: 'medium' }}
+              </li>
+              <li><strong>First day qualifying:</strong> {{ t.firstDaySinglesQualifying | date: 'longDate' }}</li>
+              <li><strong>First day main draw:</strong> {{ t.firstDaySinglesMainDraw | date: 'longDate' }}</li>
+            </ul>
+          </section>
+
+          <section class="tdetail__panel" aria-labelledby="tdetail-draw">
+            <h2 id="tdetail-draw" class="tdetail__h2">Draw sizes</h2>
+            <p class="tdetail__p"><strong>Singles main:</strong> {{ t.singlesMainDrawSize || '—' }}</p>
+            @if (t.singlesQualifyingDrawSize) {
+              <p class="tdetail__p"><strong>Singles qualifying:</strong> {{ t.singlesQualifyingDrawSize }}</p>
+            }
+            @if (t.doublesMainDrawSize) {
+              <p class="tdetail__p"><strong>Doubles main:</strong> {{ t.doublesMainDrawSize }}</p>
+            }
           </section>
         </div>
 

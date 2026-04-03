@@ -21,7 +21,13 @@
         {{ tournament().tournamentStartDate | date: 'mediumDate' }} · {{ tournament().tournamentSurface }}
       </p>
       <h2 class="tcard__name">{{ tournament().tournamentName }}</h2>
-      <p class="tcard__loc">{{ tournament().tournamentLocation }}</p>
+      <p class="tcard__loc">
+        @if (tournament().tournamentCity || tournament().tournamentCountry) {
+          {{ tournament().tournamentCity }}{{ tournament().tournamentCity && tournament().tournamentCountry ? ', ' : '' }}{{ tournament().tournamentCountry }}
+          ·
+        }
+        {{ tournament().tournamentLocation }}
+      </p>
       <p class="tcard__org">{{ tournament().tournamentOrganizer }}</p>
       <span class="tcard__more">View details</span>
     </div>

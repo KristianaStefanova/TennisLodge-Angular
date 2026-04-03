@@ -29,10 +29,25 @@
   gap: var(--space-8);
 }
 
+.section-title {
+  margin: var(--space-8) 0 var(--space-4);
+  font-size: var(--text-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--color-text, #111827);
+}
+
+.section-title:first-of-type {
+  margin-top: 0;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-6);
+}
+
+.field--full {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 720px) {

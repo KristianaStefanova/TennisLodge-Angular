@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Tournament } from '../../shared/interfaces/tournament';
@@ -7,14 +7,12 @@ import { TournamentApiDto } from '../../shared/interfaces/tournament.dto';
 
 @Injectable({ providedIn: 'root' })
 export class TournamentsApi {
-  private readonly baseUrl = isDevMode()
-    ? 'http://localhost:3000/api/tournaments'
-    : '/api/tournaments';
+  private readonly baseUrl = '/api/tournaments';
 
   constructor(private readonly http: HttpClient) {}
 
   getAll(): Observable<Tournament[]> {
-    return this.http.get<TournamentApiDto[]>(this.baseUrl).pipe(
+    return this.http.get<TournamentApiDto[]>(this.baseUrl, { withCredentials: true }).pipe(
       map((rows) => (Array.isArray(rows) ? rows : []).map((row) => this.toTournament(row))),
       tap(() => undefined),
       catchError((err) => this.handleError(err)),
@@ -22,7 +20,9 @@ export class TournamentsApi {
   }
 
   getById(id: string): Observable<Tournament> {
-    return this.http.get<TournamentApiDto>(`${this.baseUrl}/${encodeURIComponent(id)}`).pipe(
+    return this.http
+      .get<TournamentApiDto>(`${this.baseUrl}/${encodeURIComponent(id)}`, { withCredentials: true })
+      .pipe(
       map((row) => this.toTournament(row)),
       catchError((err) => this.handleError(err)),
     );
@@ -45,6 +45,8 @@ export class TournamentsApi {
       tournamentCategory: row.tournamentCategory,
       tournamentStartDate: this.parseDate(row.tournamentStartDate),
       tournamentEndDate: this.parseDate(row.tournamentEndDate),
+      tournamentCountry: row.tournamentCountry ?? '',
+      tournamentCity: row.tournamentCity ?? '',
       tournamentLocation: row.tournamentLocation,
       tournamentSurface: row.tournamentSurface,
       createdAt: row.createdAt != null ? this.parseDate(row.createdAt) : new Date(),
@@ -52,14 +54,38 @@ export class TournamentsApi {
       tournamentEmail: row.tournamentEmail,
       isDeleted: Boolean(row.isDeleted),
       tournamentImageUrl: row.tournamentImageUrl ?? '',
+      entryDeadline: this.parseDate(row.entryDeadline),
+      withdrawalDeadline: this.parseDate(row.withdrawalDeadline),
+      singlesQualifyingSignIn: this.parseDate(row.singlesQualifyingSignIn),
+      singlesMainDrawSignIn: this.parseDate(row.singlesMainDrawSignIn),
+      firstDaySinglesQualifying: this.parseDate(row.firstDaySinglesQualifying),
+      firstDaySinglesMainDraw: this.parseDate(row.firstDaySinglesMainDraw),
+      officialBall: row.officialBall ?? '',
+      tournamentDirector: row.tournamentDirector ?? '',
+      singlesMainDrawSize: row.singlesMainDrawSize ?? '',
     };
     if (row.ownerId != null && row.ownerId !== '') {
       base.ownerId = String(row.ownerId);
     }
+    const prize = row.tournamentPrize?.trim();
+    if (prize) {
+      base.tournamentPrize = prize;
+    }
+    const sq = row.singlesQualifyingDrawSize?.trim();
+    if (sq) {
+      base.singlesQualifyingDrawSize = sq;
+    }
+    const dq = row.doublesMainDrawSize?.trim();
+    if (dq) {
+      base.doublesMainDrawSize = dq;
+    }
     return base;
   }
 
-  private parseDate(value: Date | string): Date {
+  private parseDate(value: Date | string | undefined | null): Date {
+    if (value == null || value === '') {
+      return new Date();
+    }
     const d = value instanceof Date ? value : new Date(value);
     return Number.isNaN(d.getTime()) ? new Date() : d;
   }
