@@ -10,19 +10,7 @@
       }
     </nav>
 
-    @if (loading()) {
-      <div class="tdetail__state" role="status" aria-live="polite">
-        <span class="tdetail__spinner" aria-hidden="true"></span>
-        Loading…
-      </div>
-    } @else if (error()) {
-      <div class="tdetail__alert" role="alert">
-        {{ error() }}
-        <p class="tdetail__alert-actions">
-          <a routerLink="/tournaments" class="tdetail__btn">Back to catalog</a>
-        </p>
-      </div>
-    } @else if (tournament(); as t) {
+    @if (tournament(); as t) {
       <article class="tdetail__article">
         <header class="tdetail__hero">
           @if (t.tournamentImageUrl) {
