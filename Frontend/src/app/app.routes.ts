@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { TournamentDetailShellPage } from './features/tournaments/tournament-detail-shell.page';
-import { TournamentDetailPage } from './features/tournaments/tournament-detail.page';
-import { tournamentDetailResolver } from './features/tournaments/tournament-detail.resolver';
-import { TournamentListPage } from './features/tournaments/tournament-list.page';
-import { TournamentNewPage } from './features/tournaments/tournament-new.page';
+import { TournamentDetailShellPage } from './features/tournaments/pages/tournament-detail/tournament-detail-shell.page';
+import { TournamentDetailPage } from './features/tournaments/pages/tournament-detail/tournament-detail.page';
+import { tournamentDetailResolver } from './features/tournaments/pages/tournament-detail/tournament-detail.resolver';
+import { TournamentListPage } from './features/tournaments/pages/tournament-list/tournament-list.page';
+import { TournamentNewPage } from './features/tournaments/pages/tournament-new/tournament-new.page';
 import { PlaceholderPage } from './pages/placeholder.page';
 
 export const routes: Routes = [

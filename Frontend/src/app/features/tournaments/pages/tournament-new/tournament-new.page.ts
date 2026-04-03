@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { DEFAULT_TOURNAMENT_SURFACE, TOURNAMENT_SURFACE_OPTIONS } from '../../shared/constants/tournament-surfaces';
-import { Tournament } from '../../shared/interfaces/tournament';
-import { TournamentsApi } from '../../core/services/tournaments.service';
+import { DEFAULT_TOURNAMENT_SURFACE, TOURNAMENT_SURFACE_OPTIONS } from '../../../../shared/constants/tournament-surfaces';
+import { Tournament } from '../../../../shared/interfaces/tournament';
+import { TournamentsApi } from '../../../../core/services/tournaments.service';
 
 type TournamentDateKey =
   | 'tournamentStartDate'
@@ -18,7 +18,6 @@ type TournamentDateTimeKey = 'singlesQualifyingSignIn' | 'singlesMainDrawSignIn'
 
 @Component({
   selector: 'app-tournament-new-page',
-  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './tournament-new.page.html',
   styleUrl: './tournament-new.page.css',

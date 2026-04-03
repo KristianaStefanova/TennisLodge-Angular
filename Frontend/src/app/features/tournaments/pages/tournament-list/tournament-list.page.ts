@@ -1,13 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { TournamentsApi } from '../../core/services/tournaments.service';
-import { Tournament } from '../../shared/interfaces/tournament';
-import { TournamentItemComponent } from './tournament-item/tournament-item.component';
+import { TournamentsApi } from '../../../../core/services/tournaments.service';
+import { Tournament } from '../../../../shared/interfaces/tournament';
+import { TournamentItemComponent } from '../../components/tournament-item/tournament-item.component';
 
 @Component({
   selector: 'app-tournament-list-page',
-  standalone: true,
   imports: [RouterLink, TournamentItemComponent],
   templateUrl: './tournament-list.page.html',
   styleUrl: './tournament-list.page.css',
