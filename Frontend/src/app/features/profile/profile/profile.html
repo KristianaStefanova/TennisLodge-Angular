@@ -1,0 +1,127 @@
+<section class="profile" aria-labelledby="profile-title">
+  <div class="container profile__inner">
+    <div class="profile__card">
+      <header class="profile__header">
+        <div class="profile__header-text">
+          <p class="profile__kicker">Tennis Lodge</p>
+          <h1 id="profile-title" class="profile__title">Your profile</h1>
+          <p class="profile__lead">Account details from your session. Keep this information up to date.</p>
+        </div>
+        <div class="profile__toolbar">
+          <button
+            type="button"
+            class="profile__btn profile__btn--secondary"
+            (click)="refreshProfile()"
+            [disabled]="refreshing()"
+          >
+            {{ refreshing() ? 'Refreshing…' : 'Refresh' }}
+          </button>
+          <button type="button" class="profile__btn profile__btn--primary" (click)="onEditProfileClick()">
+            Edit profile
+          </button>
+        </div>
+      </header>
+
+      @if (editNoticeVisible()) {
+        <div class="profile__notice" role="status" aria-live="polite">
+          <p class="profile__notice-text">
+            Profile editing is not available yet. You will be able to update your details here in a future update.
+          </p>
+          <button type="button" class="profile__notice-dismiss" (click)="dismissEditNotice()">Dismiss</button>
+        </div>
+      }
+
+      @if (loadError()) {
+        <div class="profile__alert" role="alert">
+          {{ loadError() }}
+        </div>
+      }
+
+      @if (pictureError()) {
+        <div class="profile__alert" role="alert">
+          {{ pictureError() }}
+        </div>
+      }
+
+      @if (user(); as u) {
+        <div class="profile__body">
+          <div class="profile__identity">
+            <input
+              #pictureFileInput
+              type="file"
+              class="profile__file-input"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              (change)="onPictureFileChange($event)"
+              aria-hidden="true"
+              tabindex="-1"
+            />
+            <div class="profile__avatar-wrap" aria-hidden="true">
+              @if (pictureSrc(u.profilePictureUrl); as src) {
+                @if (!avatarBroken()) {
+                  <img
+                    class="profile__avatar"
+                    [src]="src"
+                    alt=""
+                    width="120"
+                    height="120"
+                    (error)="onAvatarError()"
+                  />
+                } @else {
+                  <span class="profile__avatar profile__avatar--fallback">{{ initials() }}</span>
+                }
+              } @else {
+                <span class="profile__avatar profile__avatar--fallback">{{ initials() }}</span>
+              }
+            </div>
+            <p class="profile__name">{{ displayName() }}</p>
+            <p class="profile__username">&#64;{{ u.username }}</p>
+            <div class="profile__photo-actions">
+              <button
+                type="button"
+                class="profile__btn profile__btn--secondary profile__btn--compact"
+                (click)="openPicturePicker()"
+                [disabled]="pictureUploading()"
+              >
+                {{ pictureUploading() ? 'Uploading…' : 'Upload new photo' }}
+              </button>
+              <span class="profile__photo-hint">JPEG, PNG, GIF, or WebP · max 2&nbsp;MB</span>
+            </div>
+          </div>
+
+          <dl class="profile__fields">
+            <div class="profile__row">
+              <dt class="profile__dt">Full name</dt>
+              <dd class="profile__dd">{{ u.firstName }} {{ u.lastName }}</dd>
+            </div>
+            <div class="profile__row">
+              <dt class="profile__dt">Email</dt>
+              <dd class="profile__dd">
+                <a class="profile__link" [href]="'mailto:' + u.email">{{ u.email }}</a>
+              </dd>
+            </div>
+            <div class="profile__row">
+              <dt class="profile__dt">Username</dt>
+              <dd class="profile__dd">{{ u.username }}</dd>
+            </div>
+            <div class="profile__row">
+              <dt class="profile__dt">Phone</dt>
+              <dd class="profile__dd">
+                @if (u.tel) {
+                  <a class="profile__link" [href]="'tel:' + u.tel">{{ u.tel }}</a>
+                } @else {
+                  <span class="profile__empty">Not provided</span>
+                }
+              </dd>
+            </div>
+          </dl>
+        </div>
+      } @else {
+        <p class="profile__empty-state">No profile data loaded.</p>
+      }
+
+      <footer class="profile__footer">
+        <a routerLink="/" class="profile__footer-link">← Back to home</a>
+      </footer>
+    </div>
+  </div>
+</section>

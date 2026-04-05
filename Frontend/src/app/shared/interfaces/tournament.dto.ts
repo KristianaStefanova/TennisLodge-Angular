@@ -1,7 +1,3 @@
-/**
- * Shape returned by the REST API (Mongo / JSON). Dates arrive as ISO strings.
- * Older documents may omit newer fields; the mapper fills defaults.
- */
 export interface TournamentApiDto {
   _id: string;
   tournamentName: string;

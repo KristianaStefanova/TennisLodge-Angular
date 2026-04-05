@@ -20,15 +20,25 @@
         </div>
       </div>
 
-      <aside class="home-hero__panel" aria-label="Get started">
-        <h2 class="home-panel__title">Get started today</h2>
-        <p class="home-panel__text">
-          Create your profile, register for events, and connect with a tennis community built for real life.
-        </p>
-        <div class="home-panel__actions">
-          <a routerLink="/register" class="home-btn home-btn--cta">Register</a>
-          <a routerLink="/login" class="home-link">Login</a>
-        </div>
+      <aside class="home-hero__panel" [attr.aria-label]="auth.isAuthenticated() ? 'Your account' : 'Get started'">
+        @if (auth.isAuthenticated()) {
+          <h2 class="home-panel__title">Welcome back</h2>
+          <p class="home-panel__text">
+            Signed in as <strong class="home-panel__strong">{{ auth.user()?.username }}</strong>. Explore tournaments or plan your next trip.
+          </p>
+          <div class="home-panel__actions">
+            <a routerLink="/tournaments" class="home-btn home-btn--primary">Explore tournaments</a>
+          </div>
+        } @else {
+          <h2 class="home-panel__title">Get started today</h2>
+          <p class="home-panel__text">
+            Create your profile, register for events, and connect with a tennis community built for real life.
+          </p>
+          <div class="home-panel__actions">
+            <a routerLink="/register" class="home-btn home-btn--cta">Register</a>
+            <a routerLink="/login" class="home-link">Login</a>
+          </div>
+        }
       </aside>
     </div>
   </section>

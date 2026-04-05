@@ -58,7 +58,6 @@
   color: var(--color-text-inverse);
 }
 
-/* Marca de acento bajo el título */
 .site-footer__title::after {
   content: "";
   display: block;

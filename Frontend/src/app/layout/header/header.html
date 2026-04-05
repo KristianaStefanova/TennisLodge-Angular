@@ -1,6 +1,12 @@
 <header class="site-header" role="banner">
   <div class="mini-navbar-wrap site-header__top">
-    <a routerLink="/" class="logo-link" aria-label="Tennis Lodge — Home">
+    <a
+      routerLink="/"
+      class="logo-link"
+      aria-label="Tennis Lodge — Home"
+      routerLinkActive="is-active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <span class="logo-wrap">
         <img
           class="header-logo"
@@ -15,12 +21,55 @@
 
     <nav class="mini-navbar" aria-label="Account">
       <ul>
-        <li>
-          <a routerLink="/login" class="mini-navbar__link mini-navbar__link--ghost">Login</a>
-        </li>
-        <li>
-          <a routerLink="/register" class="mini-navbar__link mini-navbar__link--cta">Register</a>
-        </li>
+        @if (auth.isAuthenticated()) {
+          <li class="mini-navbar__user-wrap">
+            <a
+              routerLink="/profile"
+              class="mini-navbar__user mini-navbar__user--link"
+              aria-live="polite"
+            >
+              <span class="mini-navbar__user-inner">
+                @if (headerAvatarSrc(); as src) {
+                  <img
+                    class="mini-navbar__avatar"
+                    [src]="src"
+                    alt=""
+                    width="44"
+                    height="44"
+                    (error)="onHeaderAvatarError()"
+                  />
+                } @else {
+                  <span class="mini-navbar__avatar mini-navbar__avatar--fallback" aria-hidden="true">{{
+                    headerUserInitials()
+                  }}</span>
+                }
+                <span class="mini-navbar__user-name">{{ auth.user()?.username }}</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <button type="button" class="mini-navbar__link mini-navbar__link--ghost mini-navbar__btn" (click)="logout()">
+              Log out
+            </button>
+          </li>
+        } @else {
+          <li>
+            <a
+              routerLink="/login"
+              class="mini-navbar__link mini-navbar__link--ghost"
+              routerLinkActive="is-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Login</a>
+          </li>
+          <li>
+            <a
+              routerLink="/register"
+              class="mini-navbar__link mini-navbar__link--cta"
+              routerLinkActive="is-active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Register</a>
+          </li>
+        }
       </ul>
     </nav>
   </div>

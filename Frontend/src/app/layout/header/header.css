@@ -44,8 +44,12 @@
   opacity: 0.92;
 }
 
+.logo-link.is-active {
+  opacity: 1;
+}
+
 .logo-link:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid rgba(255, 255, 255, 0.55);
   outline-offset: 3px;
 }
 
@@ -88,6 +92,87 @@
   list-style: none;
 }
 
+.mini-navbar__user-wrap {
+  max-width: 14rem;
+}
+
+.mini-navbar__user {
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: rgba(246, 247, 245, 0.92);
+}
+
+.mini-navbar__user-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mini-navbar__user-name {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-navbar__avatar {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.mini-navbar__avatar--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display, inherit);
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  margin-inline-end: -0.18em;
+  padding-inline-start: 0.08em;
+  text-align: center;
+  color: var(--color-text-inverse);
+  text-shadow: 0 1px 2px rgba(6, 61, 47, 0.35);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.06));
+  -webkit-font-smoothing: antialiased;
+}
+
+.mini-navbar__user--link {
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.mini-navbar__user--link:hover {
+  color: #fff;
+  background: rgba(246, 247, 245, 0.08);
+}
+
+.mini-navbar__user--link:focus-visible {
+  outline: 2px solid var(--color-accent, #c5e84d);
+  outline-offset: 2px;
+}
+
+.mini-navbar__btn {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  margin: 0;
+}
+
 .mini-navbar__link {
   display: inline-flex;
   align-items: center;
@@ -123,6 +208,17 @@
 .mini-navbar__link--cta:hover {
   background: var(--color-accent-muted);
   color: var(--color-brand-900);
+}
+
+.mini-navbar__link--ghost.is-active {
+  background: rgba(197, 232, 77, 0.14);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.mini-navbar__link--cta.is-active {
+  box-shadow: 0 0 0 2px rgba(6, 61, 47, 0.35);
+  font-weight: 700;
 }
 
 .mini-navbar__link:focus-visible {

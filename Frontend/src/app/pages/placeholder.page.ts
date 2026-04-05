@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-/** Página temporal hasta que existan rutas reales; permite probar el header sin errores de router. */
 @Component({
   selector: 'app-placeholder',
   template: `

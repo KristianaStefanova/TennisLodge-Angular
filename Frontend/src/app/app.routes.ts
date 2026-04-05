@@ -5,11 +5,15 @@ import { TournamentDetailPage } from './features/tournaments/pages/tournament-de
 import { tournamentDetailResolver } from './features/tournaments/pages/tournament-detail/tournament-detail.resolver';
 import { TournamentListPage } from './features/tournaments/pages/tournament-list/tournament-list.page';
 import { TournamentNewPage } from './features/tournaments/pages/tournament-new/tournament-new.page';
+import { Login } from './features/auth/login/login';
+import { Register } from './features/auth/register/register';
+import { Profile } from './features/profile/profile/profile';
 import { PlaceholderPage } from './pages/placeholder.page';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', component: Home },
-  { path: 'tournaments/new', component: TournamentNewPage },
+  { path: 'tournaments/new', component: TournamentNewPage, canActivate: [authGuard] },
   {
     path: 'tournaments/:id',
     component: TournamentDetailShellPage,
@@ -18,7 +22,8 @@ export const routes: Routes = [
   },
   { path: 'tournaments', component: TournamentListPage },
   { path: 'accommodations', component: PlaceholderPage },
-  { path: 'login', component: PlaceholderPage },
-  { path: 'register', component: PlaceholderPage },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
+  { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -1,4 +1,3 @@
-/** Indoor / outdoor variants for each base court surface (stored as the tournament surface string). */
 export const TOURNAMENT_SURFACE_OPTIONS = [
   'INDOOR - HARD',
   'OUTDOOR - HARD',

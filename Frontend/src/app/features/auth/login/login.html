@@ -1,0 +1,77 @@
+<section class="login" aria-labelledby="login-title">
+  <div class="container login__inner">
+    <div class="login__card">
+      <header class="login__header">
+        <p class="login__kicker">Tennis Lodge</p>
+        <h1 #loginTitle id="login-title" class="login__title">Welcome back</h1>
+        <p class="login__lead">Sign in with your email to continue planning matches and trips.</p>
+      </header>
+
+      @if (error()) {
+        <div
+          #loginAlert
+          class="login__alert"
+          role="alert"
+          tabindex="-1"
+          aria-live="polite"
+        >
+          {{ error() }}
+        </div>
+      }
+
+      <form class="login__form" (ngSubmit)="submit()" novalidate>
+        <div class="login__grid">
+          <label
+            class="login__field"
+            [class.login__field--invalid]="isFieldInvalid('email')"
+            for="login-input-email"
+          >
+            <span class="login__label">Email</span>
+            <input
+              #emailField
+              id="login-input-email"
+              class="login__control"
+              [class.login__control--invalid]="isFieldInvalid('email')"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              [(ngModel)]="email"
+              (ngModelChange)="onFieldChange('email')"
+              [attr.aria-invalid]="isFieldInvalid('email') ? 'true' : null"
+            />
+            <span class="login__hint">Format: name@example.com (needs @ and a dot in the domain).</span>
+          </label>
+
+          <label
+            class="login__field"
+            [class.login__field--invalid]="isFieldInvalid('password')"
+            for="login-input-password"
+          >
+            <span class="login__label">Password</span>
+            <input
+              #passwordField
+              id="login-input-password"
+              class="login__control"
+              [class.login__control--invalid]="isFieldInvalid('password')"
+              type="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              [(ngModel)]="password"
+              (ngModelChange)="onFieldChange('password')"
+              [attr.aria-invalid]="isFieldInvalid('password') ? 'true' : null"
+            />
+          </label>
+        </div>
+
+        <div class="login__actions">
+          <button class="login__btn login__btn--primary" type="submit" [disabled]="submitting()">
+            {{ submitting() ? 'Signing in…' : 'Sign in' }}
+          </button>
+          <a routerLink="/register" class="login__btn login__btn--ghost">Need an account? Create one</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

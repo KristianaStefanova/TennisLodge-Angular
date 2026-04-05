@@ -1,28 +1,49 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { isValidEmail } = require('../utils/email');
 const saltRounds = Number(process.env.SALTROUNDS) || 5;
 
 const { ObjectId } = mongoose.Schema.Types;
 
 const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+        trim: true,
+    },
     tel: {
         type: String,
+    },
+    profilePictureUrl: {
+        type: String,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        trim: true,
+        lowercase: true,
+        validate: {
+            validator: (v) => isValidEmail(v),
+            message: () => 'Please enter a valid email address (e.g. name@example.com).',
+        },
     },
     username: {
         type: String,
         required: true,
         unique: true,
-        minlength: [5, 'Username should be at least 5 characters'],
+        minlength: [3, 'Username should be at least 3 characters'],
         validate: {
             validator: function (v) {
-                return /[a-zA-Z0-9]+/g.test(v);
+                return typeof v === 'string' && /^[a-zA-Z]+$/.test(v);
             },
-            message: props => `${props.value} must contains only latin letters and digits!`
+            message: () => 'Username must be letters only (A–Z), at least 3 characters, no numbers.',
         },
     },
     password: {
@@ -31,9 +52,12 @@ const userSchema = new mongoose.Schema({
         minlength: [5, 'Password should be at least 5 characters'],
         validate: {
             validator: function (v) {
-                return /[a-zA-Z0-9]+/g.test(v);
+                if (typeof v !== 'string') {
+                    return false;
+                }
+                return /[a-zA-Z]/.test(v) && /[0-9]/.test(v);
             },
-            message: props => `${props.value} must contains only latin letters and digits!`
+            message: () => 'Password must contain at least one letter and one number.',
         },
     },
     themes: [{

@@ -1,2 +1,4 @@
 /.env
 /node_modules
+/static/uploads/profiles/*
+!/static/uploads/profiles/.gitkeep

@@ -4,9 +4,14 @@ function errorHandler(err, req, res, next) {
             .json({ message: 'ErrorHandler: not allowed!' })
     } else {
         console.error(err.stack)
-        // console.log(err)
-        res.status(500)
-            .json({ message: 'ErrorHandler: Something went wrong!', err })
+        const payload = {
+            message: 'ErrorHandler: Something went wrong!',
+        };
+        if (process.env.NODE_ENV !== 'production') {
+            payload.detail = err.message;
+            payload.name = err.name;
+        }
+        res.status(500).json(payload)
     }
 }
 

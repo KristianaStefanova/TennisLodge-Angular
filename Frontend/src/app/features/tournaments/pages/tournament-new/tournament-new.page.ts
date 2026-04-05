@@ -67,7 +67,6 @@ export class TournamentNewPage {
     return `${y}-${m}-${day}`;
   }
 
-  /** For `input type="datetime-local"` (local date + time, minute precision). */
   formatDateTimeLocal(d: Date): string {
     if (!d || Number.isNaN(d.getTime())) {
       return '';

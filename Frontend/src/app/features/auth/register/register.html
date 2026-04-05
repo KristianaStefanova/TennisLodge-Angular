@@ -1,0 +1,181 @@
+<section class="register" aria-labelledby="register-title">
+  <div class="container register__inner">
+    <div class="register__card">
+      <header class="register__header">
+        <p class="register__kicker">Tennis Lodge</p>
+        <h1 #registerTitle id="register-title" class="register__title">Create your account</h1>
+        <p class="register__lead">
+          Join the community to follow tournaments, host events, and plan your trips.
+        </p>
+      </header>
+
+      @if (error()) {
+        <div
+          #registerAlert
+          class="register__alert"
+          role="alert"
+          tabindex="-1"
+          aria-live="polite"
+        >
+          {{ error() }}
+        </div>
+      }
+
+      <form class="register__form" (ngSubmit)="submit()" novalidate>
+        <div class="register__grid">
+          <label
+            class="register__field register__field--full"
+            [class.register__field--invalid]="isFieldInvalid('email')"
+            for="register-input-email"
+          >
+            <span class="register__label">Email</span>
+            <input
+              #emailField
+              id="register-input-email"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('email')"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              [(ngModel)]="email"
+              (ngModelChange)="onFieldChange('email')"
+              [attr.aria-invalid]="isFieldInvalid('email') ? 'true' : null"
+            />
+            <span class="register__hint">Format: name@example.com (needs @ and a dot in the domain).</span>
+          </label>
+
+          <label
+            class="register__field"
+            [class.register__field--invalid]="isFieldInvalid('firstName')"
+            for="register-input-firstName"
+          >
+            <span class="register__label">First name</span>
+            <input
+              #firstNameField
+              id="register-input-firstName"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('firstName')"
+              type="text"
+              name="firstName"
+              required
+              autocomplete="given-name"
+              [(ngModel)]="firstName"
+              (ngModelChange)="onFieldChange('firstName')"
+              [attr.aria-invalid]="isFieldInvalid('firstName') ? 'true' : null"
+            />
+          </label>
+
+          <label
+            class="register__field"
+            [class.register__field--invalid]="isFieldInvalid('lastName')"
+            for="register-input-lastName"
+          >
+            <span class="register__label">Last name</span>
+            <input
+              #lastNameField
+              id="register-input-lastName"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('lastName')"
+              type="text"
+              name="lastName"
+              required
+              autocomplete="family-name"
+              [(ngModel)]="lastName"
+              (ngModelChange)="onFieldChange('lastName')"
+              [attr.aria-invalid]="isFieldInvalid('lastName') ? 'true' : null"
+            />
+          </label>
+
+          <label
+            class="register__field"
+            [class.register__field--invalid]="isFieldInvalid('username')"
+            for="register-input-username"
+          >
+            <span class="register__label">Username</span>
+            <input
+              #usernameField
+              id="register-input-username"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('username')"
+              type="text"
+              name="username"
+              required
+              minlength="3"
+              pattern="[A-Za-z]{3,}"
+              title="At least 3 letters, A–Z only, no numbers"
+              autocomplete="username"
+              [(ngModel)]="username"
+              (ngModelChange)="onFieldChange('username')"
+              [attr.aria-invalid]="isFieldInvalid('username') ? 'true' : null"
+            />
+            <span class="register__hint">At least 3 letters (A–Z), no numbers or spaces.</span>
+          </label>
+
+          <label class="register__field" for="register-input-tel">
+            <span class="register__label">Phone <span class="register__optional">(optional)</span></span>
+            <input
+              id="register-input-tel"
+              class="register__control"
+              type="tel"
+              name="tel"
+              autocomplete="tel"
+              [(ngModel)]="tel"
+            />
+          </label>
+
+          <label
+            class="register__field"
+            [class.register__field--invalid]="isFieldInvalid('password')"
+            for="register-input-password"
+          >
+            <span class="register__label">Password</span>
+            <input
+              #passwordField
+              id="register-input-password"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('password')"
+              type="password"
+              name="password"
+              required
+              minlength="5"
+              autocomplete="new-password"
+              [(ngModel)]="password"
+              (ngModelChange)="onFieldChange('password')"
+              [attr.aria-invalid]="isFieldInvalid('password') ? 'true' : null"
+            />
+            <span class="register__hint">At least 5 characters, with at least one letter and one number.</span>
+          </label>
+
+          <label
+            class="register__field"
+            [class.register__field--invalid]="isFieldInvalid('repeatPassword')"
+            for="register-input-repeatPassword"
+          >
+            <span class="register__label">Confirm password</span>
+            <input
+              #repeatPasswordField
+              id="register-input-repeatPassword"
+              class="register__control"
+              [class.register__control--invalid]="isFieldInvalid('repeatPassword')"
+              type="password"
+              name="repeatPassword"
+              required
+              autocomplete="new-password"
+              [(ngModel)]="repeatPassword"
+              (ngModelChange)="onFieldChange('repeatPassword')"
+              [attr.aria-invalid]="isFieldInvalid('repeatPassword') ? 'true' : null"
+            />
+          </label>
+        </div>
+
+        <div class="register__actions">
+          <button class="register__btn register__btn--primary" type="submit" [disabled]="submitting()">
+            {{ submitting() ? 'Creating account…' : 'Create account' }}
+          </button>
+          <a routerLink="/login" class="register__btn register__btn--ghost">Already have an account? Log in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
