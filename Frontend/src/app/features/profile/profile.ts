@@ -10,9 +10,9 @@ import {
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-import { AuthService } from '../../../core/services/auth.service';
-import { UserService } from '../../../core/services/user.service';
-import { resolvePublicAssetUrl } from '../../../core/utils/public-asset-url';
+import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] as const;
 const MAX_BYTES = 2 * 1024 * 1024;

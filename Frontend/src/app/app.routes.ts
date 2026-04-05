@@ -7,7 +7,8 @@ import { TournamentListPage } from './features/tournaments/pages/tournament-list
 import { TournamentNewPage } from './features/tournaments/pages/tournament-new/tournament-new.page';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
-import { Profile } from './features/profile/profile/profile';
+import { Profile } from './features/profile/profile';
+import { NotFound } from './features/not-found/not-found';
 import { PlaceholderPage } from './pages/placeholder.page';
 import { authGuard } from './core/guards/auth.guard';
 
@@ -25,5 +26,5 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: '**', component: NotFound },
 ];

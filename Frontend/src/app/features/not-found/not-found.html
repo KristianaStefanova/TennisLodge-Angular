@@ -1,0 +1,47 @@
+<div class="nf">
+  <div class="nf__card">
+    <div class="nf__grid">
+      <div class="nf__visual" aria-hidden="true">
+        <span class="nf__watermark">404</span>
+        <div class="nf__court" aria-hidden="true">
+          <div class="nf__court-surface">
+            <span class="nf__court-line nf__court-line--single nf__court-line--single-l"></span>
+            <span class="nf__court-line nf__court-line--single nf__court-line--single-r"></span>
+            <span class="nf__court-line nf__court-line--service nf__court-line--service-n"></span>
+            <span class="nf__court-line nf__court-line--service nf__court-line--service-s"></span>
+            <span class="nf__court-line nf__court-line--center"></span>
+            <span class="nf__court-line nf__court-line--net"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nf__body">
+        <p class="nf__kicker">Page not found</p>
+        <h1 class="nf__title">We couldn't find that page</h1>
+        <p class="nf__lead">
+          The link may be broken, or the page may have been moved. Double-check the URL, head back
+          home, or explore tournaments and accommodation.
+        </p>
+
+        <p class="nf__path-label">Requested path</p>
+        <p class="nf__path">
+          <code class="nf__path-code">{{ attemptedPath() }}</code>
+        </p>
+
+        <div class="nf__actions" role="group" aria-label="What would you like to do next?">
+          <button type="button" class="nf__btn nf__btn--primary" (click)="goBack()">Go back</button>
+          <a routerLink="/" class="nf__btn nf__btn--secondary">Home</a>
+          <a routerLink="/tournaments" class="nf__btn nf__btn--ghost">Tournaments</a>
+        </div>
+
+        <nav class="nf__quick" aria-label="Popular destinations">
+          <a routerLink="/accommodations" class="nf__quick-link">Accommodation</a>
+          <span class="nf__quick-sep" aria-hidden="true">·</span>
+          <a routerLink="/login" class="nf__quick-link">Log in</a>
+          <span class="nf__quick-sep" aria-hidden="true">·</span>
+          <a routerLink="/register" class="nf__quick-link">Register</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
