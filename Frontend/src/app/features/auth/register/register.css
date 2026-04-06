@@ -134,6 +134,24 @@
   color: var(--color-text-muted);
 }
 
+.register__field-error {
+  margin: 0;
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #991b1b;
+}
+
+.register__control.input-error {
+  border-color: color-mix(in srgb, #b91c1c 55%, var(--color-border));
+  background: color-mix(in srgb, #fef2f2 65%, var(--color-surface));
+}
+
+.register__control.input-error:focus-visible {
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #b91c1c 22%, transparent);
+}
+
 .register__control {
   width: 100%;
   padding: var(--space-3) var(--space-4);

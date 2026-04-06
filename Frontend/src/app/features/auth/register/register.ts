@@ -1,34 +1,16 @@
 import { afterNextRender, Component, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import type { RegisterPayload } from '../../../shared/interfaces/user.dto';
-
-export type RegisterField =
-  | 'email'
-  | 'firstName'
-  | 'lastName'
-  | 'username'
-  | 'password'
-  | 'repeatPassword';
-
-function passwordHasLetterAndNumber(p: string): boolean {
-  return /[a-zA-Z]/.test(p) && /[0-9]/.test(p);
-}
-
-function isValidUsernameLettersOnly(u: string): boolean {
-  return /^[a-zA-Z]{3,}$/.test(u);
-}
-
-function isValidEmail(value: string): boolean {
-  const s = value.trim().toLowerCase();
-  return s.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-}
+import { passwordStrengthReason, validationKeys } from '../../../shared/validators/validation-keys';
+import { createRegisterForm } from './register-form';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -39,188 +21,95 @@ export class Register {
 
   private readonly registerTitle = viewChild<ElementRef<HTMLElement>>('registerTitle');
   private readonly alertBanner = viewChild<ElementRef<HTMLElement>>('registerAlert');
-  private readonly emailField = viewChild<ElementRef<HTMLInputElement>>('emailField');
-  private readonly firstNameField = viewChild<ElementRef<HTMLInputElement>>('firstNameField');
-  private readonly lastNameField = viewChild<ElementRef<HTMLInputElement>>('lastNameField');
-  private readonly usernameField = viewChild<ElementRef<HTMLInputElement>>('usernameField');
-  private readonly passwordField = viewChild<ElementRef<HTMLInputElement>>('passwordField');
-  private readonly repeatPasswordField = viewChild<ElementRef<HTMLInputElement>>('repeatPasswordField');
 
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
-  readonly invalidFields = signal<ReadonlySet<RegisterField>>(new Set());
 
-  email = '';
-  firstName = '';
-  lastName = '';
-  username = '';
-  password = '';
-  repeatPassword = '';
-  tel = '';
+  readonly registerForm = createRegisterForm();
 
-  isFieldInvalid(name: RegisterField): boolean {
-    return this.invalidFields().has(name);
+  readonly validationKeys = validationKeys;
+  readonly passwordStrengthReason = passwordStrengthReason;
+
+  constructor() {
+    this.registerForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.error.set(null));
   }
 
-  onFieldChange(field: RegisterField): void {
-    const keys = this.invalidFields();
-    const mismatchPair = keys.has('password') && keys.has('repeatPassword');
-
-    if (mismatchPair && (field === 'password' || field === 'repeatPassword')) {
-      const next = new Set(keys);
-      next.delete('password');
-      next.delete('repeatPassword');
-      this.invalidFields.set(next);
-      if (next.size === 0) {
-        this.error.set(null);
-      }
-      return;
-    }
-
-    if (!keys.has(field)) {
-      return;
-    }
-
-    const next = new Set(keys);
-    next.delete(field);
-    this.invalidFields.set(next);
-    if (next.size === 0) {
-      this.error.set(null);
-    }
+  passwordGroupInvalid(): boolean {
+    return (
+      this.registerForm.hasError(validationKeys.passwordsMismatch) &&
+      this.registerForm.dirty &&
+      !!this.registerForm.controls.password.value &&
+      !!this.registerForm.controls.repeatPassword.value
+    );
   }
 
   submit(): void {
     this.error.set(null);
-    this.invalidFields.set(new Set());
-
-    const email = this.email.trim().toLowerCase();
-    const firstName = this.firstName.trim();
-    const lastName = this.lastName.trim();
-    const username = this.username.trim();
-    const password = this.password;
-    const repeatPassword = this.repeatPassword;
-    const tel = this.tel.trim();
-
-    const missing: RegisterField[] = [];
-    if (!email) {
-      missing.push('email');
-    }
-    if (!firstName) {
-      missing.push('firstName');
-    }
-    if (!lastName) {
-      missing.push('lastName');
-    }
-    if (!username) {
-      missing.push('username');
-    }
-    if (!password) {
-      missing.push('password');
-    }
-
-    if (missing.length > 0) {
-      this.showValidationIssue('Please complete all required fields.', missing);
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      this.scrollToFirstIssue();
       return;
     }
 
-    if (!isValidEmail(email)) {
-      this.showValidationIssue(
-        'Please enter a valid email address (e.g. name@example.com — include @ and a domain with a dot).',
-        ['email'],
-      );
-      return;
-    }
-
-    if (!isValidUsernameLettersOnly(username)) {
-      this.showValidationIssue(
-        'Username must be at least 3 letters (A–Z only, no numbers or spaces).',
-        ['username'],
-      );
-      return;
-    }
-
-    if (password.length < 5) {
-      this.showValidationIssue('Password must be at least 5 characters.', ['password']);
-      return;
-    }
-
-    if (!passwordHasLetterAndNumber(password)) {
-      this.showValidationIssue(
-        'Password must include at least one letter and one number.',
-        ['password', 'repeatPassword'],
-      );
-      return;
-    }
-
-    if (password !== repeatPassword) {
-      this.showValidationIssue('Passwords do not match. Check both fields.', ['password', 'repeatPassword']);
-      return;
-    }
+    const v = this.registerForm.getRawValue();
+    const registrationPayload: RegisterPayload = {
+      firstName: v.firstName.trim(),
+      lastName: v.lastName.trim(),
+      email: v.email.trim().toLowerCase(),
+      username: v.username.trim(),
+      password: v.password,
+      repeatPassword: v.repeatPassword,
+      ...(v.tel.trim() ? { tel: v.tel.trim() } : {}),
+    };
 
     this.submitting.set(true);
 
-    const registrationPayload: RegisterPayload = {
-      firstName,
-      lastName,
-      email,
-      username,
-      password,
-      repeatPassword,
-      ...(tel ? { tel } : {}),
-    };
-
-    this.auth.register(registrationPayload)
+    this.auth
+      .register(registrationPayload)
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: async () => {
-          this.invalidFields.set(new Set());
           await this.router.navigateByUrl('/');
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not create account.';
-          this.invalidFields.set(new Set());
           this.error.set(msg);
           this.scrollAlertIntoView();
         },
       });
   }
 
-  private showValidationIssue(message: string, fields: RegisterField[]): void {
-    this.error.set(message);
-    this.invalidFields.set(new Set(fields));
-    this.scrollAlertIntoView(fields[0]);
-  }
-
-  private scrollAlertIntoView(focusField?: RegisterField): void {
+  private scrollToFirstIssue(): void {
+    const fieldOrder = ['email', 'firstName', 'lastName', 'username', 'password', 'repeatPassword'] as const;
     afterNextRender(
       () => {
-        const el = this.alertBanner()?.nativeElement;
-        const title = this.registerTitle()?.nativeElement;
-        (title ?? el)?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-        if (focusField) {
-          this.inputForField(focusField)?.focus({ preventScroll: true });
-        } else {
+        for (const key of fieldOrder) {
+          if (this.registerForm.controls[key].invalid) {
+            const el = document.getElementById(`register-input-${key}`);
+            el?.focus({ preventScroll: true });
+            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+          }
+        }
+        if (this.registerForm.hasError(validationKeys.passwordsMismatch)) {
+          const el = document.getElementById('register-input-repeatPassword');
           el?.focus({ preventScroll: true });
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       },
       { injector: this.injector },
     );
   }
 
-  private inputForField(field: RegisterField): HTMLInputElement | undefined {
-    switch (field) {
-      case 'email':
-        return this.emailField()?.nativeElement;
-      case 'firstName':
-        return this.firstNameField()?.nativeElement;
-      case 'lastName':
-        return this.lastNameField()?.nativeElement;
-      case 'username':
-        return this.usernameField()?.nativeElement;
-      case 'password':
-        return this.passwordField()?.nativeElement;
-      case 'repeatPassword':
-        return this.repeatPasswordField()?.nativeElement;
-    }
+  private scrollAlertIntoView(): void {
+    afterNextRender(
+      () => {
+        const el = this.alertBanner()?.nativeElement;
+        const title = this.registerTitle()?.nativeElement;
+        (title ?? el)?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+        el?.focus({ preventScroll: true });
+      },
+      { injector: this.injector },
+    );
   }
 }

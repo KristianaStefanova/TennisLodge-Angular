@@ -19,49 +19,77 @@
         </div>
       }
 
-      <form class="login__form" (ngSubmit)="submit()" novalidate>
+      <form class="login__form" [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
         <div class="login__grid">
           <label
             class="login__field"
-            [class.login__field--invalid]="isFieldInvalid('email')"
+            [class.login__field--invalid]="
+              loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+            "
             for="login-input-email"
           >
             <span class="login__label">Email</span>
             <input
-              #emailField
               id="login-input-email"
               class="login__control"
-              [class.login__control--invalid]="isFieldInvalid('email')"
+              [class.login__control--invalid]="
+                loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+              "
+              [class.input-error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
               type="email"
-              name="email"
-              required
+              formControlName="email"
               autocomplete="email"
-              [(ngModel)]="email"
-              (ngModelChange)="onFieldChange('email')"
-              [attr.aria-invalid]="isFieldInvalid('email') ? 'true' : null"
+              [attr.aria-invalid]="
+                loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
+              <span class="login__field-error" role="alert">
+                @if (loginForm.get('email')?.hasError('required')) {
+                  This field is required.
+                } @else if (loginForm.get('email')?.hasError(validationKeys.invalidEmail)) {
+                  Please enter a valid email address (e.g. name@example.com — include @ and a dot in the domain).
+                }
+              </span>
+            }
             <span class="login__hint">Format: name@example.com (needs @ and a dot in the domain).</span>
           </label>
 
           <label
             class="login__field"
-            [class.login__field--invalid]="isFieldInvalid('password')"
+            [class.login__field--invalid]="
+              loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+            "
             for="login-input-password"
           >
             <span class="login__label">Password</span>
             <input
-              #passwordField
               id="login-input-password"
               class="login__control"
-              [class.login__control--invalid]="isFieldInvalid('password')"
+              [class.login__control--invalid]="
+                loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              "
+              [class.input-error]="
+                loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+              "
               type="password"
-              name="password"
-              required
+              formControlName="password"
               autocomplete="current-password"
-              [(ngModel)]="password"
-              (ngModelChange)="onFieldChange('password')"
-              [attr.aria-invalid]="isFieldInvalid('password') ? 'true' : null"
+              [attr.aria-invalid]="
+                loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
+              <span class="login__field-error" role="alert">
+                @if (loginForm.get('password')?.hasError('required')) {
+                  This field is required.
+                }
+              </span>
+            }
           </label>
         </div>
 

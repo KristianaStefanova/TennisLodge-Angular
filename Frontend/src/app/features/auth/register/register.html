@@ -21,94 +21,151 @@
         </div>
       }
 
-      <form class="register__form" (ngSubmit)="submit()" novalidate>
+      <form class="register__form" [formGroup]="registerForm" (ngSubmit)="submit()" novalidate>
         <div class="register__grid">
           <label
             class="register__field register__field--full"
-            [class.register__field--invalid]="isFieldInvalid('email')"
+            [class.register__field--invalid]="
+              registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+            "
             for="register-input-email"
           >
             <span class="register__label">Email</span>
             <input
-              #emailField
               id="register-input-email"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('email')"
+              [class.register__control--invalid]="
+                registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+              "
+              [class.input-error]="
+                registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+              "
               type="email"
-              name="email"
-              required
+              formControlName="email"
               autocomplete="email"
-              [(ngModel)]="email"
-              (ngModelChange)="onFieldChange('email')"
-              [attr.aria-invalid]="isFieldInvalid('email') ? 'true' : null"
+              [attr.aria-invalid]="
+                registerForm.get('email')?.touched && registerForm.get('email')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+              <span class="register__field-error" role="alert">
+                @if (registerForm.get('email')?.hasError('required')) {
+                  This field is required.
+                } @else if (registerForm.get('email')?.hasError(validationKeys.invalidEmail)) {
+                  Please enter a valid email address (e.g. name@example.com — include @ and a dot in the domain).
+                }
+              </span>
+            }
             <span class="register__hint">Format: name@example.com (needs @ and a dot in the domain).</span>
           </label>
 
           <label
             class="register__field"
-            [class.register__field--invalid]="isFieldInvalid('firstName')"
+            [class.register__field--invalid]="
+              registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid
+            "
             for="register-input-firstName"
           >
             <span class="register__label">First name</span>
             <input
-              #firstNameField
               id="register-input-firstName"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('firstName')"
+              [class.register__control--invalid]="
+                registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid
+              "
+              [class.input-error]="
+                registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid
+              "
               type="text"
-              name="firstName"
-              required
+              formControlName="firstName"
               autocomplete="given-name"
-              [(ngModel)]="firstName"
-              (ngModelChange)="onFieldChange('firstName')"
-              [attr.aria-invalid]="isFieldInvalid('firstName') ? 'true' : null"
+              [attr.aria-invalid]="
+                registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid) {
+              <span class="register__field-error" role="alert">
+                @if (registerForm.get('firstName')?.hasError('required')) {
+                  This field is required.
+                }
+              </span>
+            }
           </label>
 
           <label
             class="register__field"
-            [class.register__field--invalid]="isFieldInvalid('lastName')"
+            [class.register__field--invalid]="
+              registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid
+            "
             for="register-input-lastName"
           >
             <span class="register__label">Last name</span>
             <input
-              #lastNameField
               id="register-input-lastName"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('lastName')"
+              [class.register__control--invalid]="
+                registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid
+              "
+              [class.input-error]="
+                registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid
+              "
               type="text"
-              name="lastName"
-              required
+              formControlName="lastName"
               autocomplete="family-name"
-              [(ngModel)]="lastName"
-              (ngModelChange)="onFieldChange('lastName')"
-              [attr.aria-invalid]="isFieldInvalid('lastName') ? 'true' : null"
+              [attr.aria-invalid]="
+                registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
+              <span class="register__field-error" role="alert">
+                @if (registerForm.get('lastName')?.hasError('required')) {
+                  This field is required.
+                }
+              </span>
+            }
           </label>
 
           <label
             class="register__field"
-            [class.register__field--invalid]="isFieldInvalid('username')"
+            [class.register__field--invalid]="
+              registerForm.get('username')?.touched && registerForm.get('username')?.invalid
+            "
             for="register-input-username"
           >
             <span class="register__label">Username</span>
             <input
-              #usernameField
               id="register-input-username"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('username')"
+              [class.register__control--invalid]="
+                registerForm.get('username')?.touched && registerForm.get('username')?.invalid
+              "
+              [class.input-error]="
+                registerForm.get('username')?.touched && registerForm.get('username')?.invalid
+              "
               type="text"
-              name="username"
-              required
-              minlength="3"
-              pattern="[A-Za-z]{3,}"
-              title="At least 3 letters, A–Z only, no numbers"
+              formControlName="username"
               autocomplete="username"
-              [(ngModel)]="username"
-              (ngModelChange)="onFieldChange('username')"
-              [attr.aria-invalid]="isFieldInvalid('username') ? 'true' : null"
+              [attr.aria-invalid]="
+                registerForm.get('username')?.touched && registerForm.get('username')?.invalid
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('username')?.touched && registerForm.get('username')?.invalid) {
+              <span class="register__field-error" role="alert">
+                @if (registerForm.get('username')?.hasError('required')) {
+                  This field is required.
+                } @else if (registerForm.get('username')?.hasError(validationKeys.usernameLetters)) {
+                  Username must be at least 3 letters (A–Z only, no numbers or spaces).
+                }
+              </span>
+            }
             <span class="register__hint">At least 3 letters (A–Z), no numbers or spaces.</span>
           </label>
 
@@ -118,54 +175,104 @@
               id="register-input-tel"
               class="register__control"
               type="tel"
-              name="tel"
+              formControlName="tel"
               autocomplete="tel"
-              [(ngModel)]="tel"
             />
           </label>
 
           <label
             class="register__field"
-            [class.register__field--invalid]="isFieldInvalid('password')"
+            [class.register__field--invalid]="
+              (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) ||
+              passwordGroupInvalid()
+            "
             for="register-input-password"
           >
             <span class="register__label">Password</span>
             <input
-              #passwordField
               id="register-input-password"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('password')"
+              [class.register__control--invalid]="
+                (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) ||
+                passwordGroupInvalid()
+              "
+              [class.input-error]="
+                (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) ||
+                passwordGroupInvalid()
+              "
               type="password"
-              name="password"
-              required
-              minlength="5"
+              formControlName="password"
               autocomplete="new-password"
-              [(ngModel)]="password"
-              (ngModelChange)="onFieldChange('password')"
-              [attr.aria-invalid]="isFieldInvalid('password') ? 'true' : null"
+              [attr.aria-invalid]="
+                (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) ||
+                passwordGroupInvalid()
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+              <span class="register__field-error" role="alert">
+                @if (registerForm.get('password')?.hasError('required')) {
+                  This field is required.
+                } @else if (
+                  registerForm.get('password')?.getError(validationKeys.passwordStrength)?.reason ===
+                  passwordStrengthReason.minLength
+                ) {
+                  Password must be at least 5 characters.
+                } @else if (
+                  registerForm.get('password')?.getError(validationKeys.passwordStrength)?.reason ===
+                  passwordStrengthReason.letterAndNumber
+                ) {
+                  Password must include at least one letter and one number.
+                }
+              </span>
+            }
             <span class="register__hint">At least 5 characters, with at least one letter and one number.</span>
           </label>
 
           <label
             class="register__field"
-            [class.register__field--invalid]="isFieldInvalid('repeatPassword')"
+            [class.register__field--invalid]="
+              (registerForm.get('repeatPassword')?.touched &&
+                registerForm.get('repeatPassword')?.invalid) ||
+              passwordGroupInvalid()
+            "
             for="register-input-repeatPassword"
           >
             <span class="register__label">Confirm password</span>
             <input
-              #repeatPasswordField
               id="register-input-repeatPassword"
               class="register__control"
-              [class.register__control--invalid]="isFieldInvalid('repeatPassword')"
+              [class.register__control--invalid]="
+                (registerForm.get('repeatPassword')?.touched &&
+                  registerForm.get('repeatPassword')?.invalid) ||
+                passwordGroupInvalid()
+              "
+              [class.input-error]="
+                (registerForm.get('repeatPassword')?.touched &&
+                  registerForm.get('repeatPassword')?.invalid) ||
+                passwordGroupInvalid()
+              "
               type="password"
-              name="repeatPassword"
-              required
+              formControlName="repeatPassword"
               autocomplete="new-password"
-              [(ngModel)]="repeatPassword"
-              (ngModelChange)="onFieldChange('repeatPassword')"
-              [attr.aria-invalid]="isFieldInvalid('repeatPassword') ? 'true' : null"
+              [attr.aria-invalid]="
+                (registerForm.get('repeatPassword')?.touched &&
+                  registerForm.get('repeatPassword')?.invalid) ||
+                passwordGroupInvalid()
+                  ? 'true'
+                  : null
+              "
             />
+            @if (registerForm.get('repeatPassword')?.touched) {
+              @if (registerForm.get('repeatPassword')?.hasError('required')) {
+                <span class="register__field-error" role="alert">This field is required.</span>
+              } @else if (passwordGroupInvalid()) {
+                <span class="register__field-error" role="alert">
+                  Passwords do not match. Check both fields.
+                </span>
+              }
+            }
           </label>
         </div>
 

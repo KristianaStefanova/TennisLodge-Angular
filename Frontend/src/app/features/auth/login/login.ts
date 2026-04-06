@@ -1,20 +1,16 @@
 import { afterNextRender, Component, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import type { LoginCredentials } from '../../../shared/interfaces/user.dto';
-
-export type LoginField = 'email' | 'password';
-
-function isValidEmail(value: string): boolean {
-  const s = value.trim().toLowerCase();
-  return s.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-}
+import { validationKeys } from '../../../shared/validators/validation-keys';
+import { createLoginForm } from './login-form';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -26,76 +22,41 @@ export class Login {
 
   private readonly loginTitle = viewChild<ElementRef<HTMLElement>>('loginTitle');
   private readonly alertBanner = viewChild<ElementRef<HTMLElement>>('loginAlert');
-  private readonly emailField = viewChild<ElementRef<HTMLInputElement>>('emailField');
-  private readonly passwordField = viewChild<ElementRef<HTMLInputElement>>('passwordField');
 
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
-  readonly invalidFields = signal<ReadonlySet<LoginField>>(new Set());
 
-  email = '';
-  password = '';
+  readonly loginForm = createLoginForm();
 
-  isFieldInvalid(name: LoginField): boolean {
-    return this.invalidFields().has(name);
-  }
+  /** Usado en la plantilla: `hasError(validationKeys.invalidEmail)`, etc. */
+  readonly validationKeys: typeof validationKeys = validationKeys;
 
-  onFieldChange(field: LoginField): void {
-    const keys = this.invalidFields();
-    if (!keys.has(field)) {
-      return;
-    }
-    const next = new Set(keys);
-    next.delete(field);
-    this.invalidFields.set(next);
-    if (next.size === 0) {
-      this.error.set(null);
-    }
+  constructor() {
+    this.loginForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.error.set(null));
   }
 
   submit(): void {
     this.error.set(null);
-    this.invalidFields.set(new Set());
-
-    const email = this.email.trim().toLowerCase();
-    const password = this.password;
-
-    const missing: LoginField[] = [];
-    if (!email) {
-      missing.push('email');
-    }
-    if (!password) {
-      missing.push('password');
-    }
-
-    if (missing.length > 0) {
-      this.showValidationIssue('Please enter your email and password.', missing);
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      this.scrollToFirstIssue();
       return;
     }
 
-    if (!isValidEmail(email)) {
-      this.showValidationIssue(
-        'Please enter a valid email address (e.g. name@example.com — include @ and a domain with a dot).',
-        ['email'],
-      );
-      return;
-    }
+    const { email, password } = this.loginForm.getRawValue();
+    const credentials: LoginCredentials = { email: email.trim().toLowerCase(), password };
 
     this.submitting.set(true);
-
-    const credentials: LoginCredentials = { email, password };
 
     this.auth
       .login(credentials)
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: async () => {
-          this.invalidFields.set(new Set());
           await this.router.navigateByUrl(this.postLoginTarget());
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not sign in.';
-          this.invalidFields.set(new Set());
           this.error.set(msg);
           this.scrollAlertIntoView();
         },
@@ -110,34 +71,32 @@ export class Login {
     return '/';
   }
 
-  private showValidationIssue(message: string, fields: LoginField[]): void {
-    this.error.set(message);
-    this.invalidFields.set(new Set(fields));
-    this.scrollAlertIntoView(fields[0]);
-  }
-
-  private scrollAlertIntoView(focusField?: LoginField): void {
+  private scrollToFirstIssue(): void {
+    const order = ['email', 'password'] as const;
     afterNextRender(
       () => {
-        const el = this.alertBanner()?.nativeElement;
-        const title = this.loginTitle()?.nativeElement;
-        (title ?? el)?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-        if (focusField) {
-          this.inputForField(focusField)?.focus({ preventScroll: true });
-        } else {
-          el?.focus({ preventScroll: true });
+        for (const key of order) {
+          if (this.loginForm.controls[key].invalid) {
+            const el = document.getElementById(`login-input-${key}`);
+            el?.focus({ preventScroll: true });
+            el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+          }
         }
       },
       { injector: this.injector },
     );
   }
 
-  private inputForField(field: LoginField): HTMLInputElement | undefined {
-    switch (field) {
-      case 'email':
-        return this.emailField()?.nativeElement;
-      case 'password':
-        return this.passwordField()?.nativeElement;
-    }
+  private scrollAlertIntoView(): void {
+    afterNextRender(
+      () => {
+        const el = this.alertBanner()?.nativeElement;
+        const title = this.loginTitle()?.nativeElement;
+        (title ?? el)?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+        el?.focus({ preventScroll: true });
+      },
+      { injector: this.injector },
+    );
   }
 }

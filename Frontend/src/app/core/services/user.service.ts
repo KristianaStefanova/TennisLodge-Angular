@@ -41,6 +41,8 @@ export class UserService {
 
   toUser(row: UserApiDto): User {
     const telRaw = row.tel;
+    const postsRaw = row.posts;
+    const createdAtRaw = row.created_at;
     return {
       _id: String(row._id),
       username: String(row.username ?? ''),
@@ -53,6 +55,11 @@ export class UserService {
           : undefined,
       tel:
         telRaw != null && String(telRaw).trim() !== '' ? String(telRaw).trim() : undefined,
+      posts: Array.isArray(postsRaw) ? postsRaw.map((id) => String(id)) : undefined,
+      created_at:
+        createdAtRaw != null && String(createdAtRaw).trim() !== ''
+          ? String(createdAtRaw)
+          : undefined,
     };
   }
 
