@@ -5,12 +5,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import type { LoginCredentials } from '../../../shared/interfaces/user.dto';
+import { InputErrorDirective } from '../../../shared/directives/input-error.directive';
 import { validationKeys } from '../../../shared/validators/validation-keys';
 import { createLoginForm } from './login-form';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, InputErrorDirective],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -28,7 +29,6 @@ export class Login {
 
   readonly loginForm = createLoginForm();
 
-  /** Usado en la plantilla: `hasError(validationKeys.invalidEmail)`, etc. */
   readonly validationKeys: typeof validationKeys = validationKeys;
 
   constructor() {

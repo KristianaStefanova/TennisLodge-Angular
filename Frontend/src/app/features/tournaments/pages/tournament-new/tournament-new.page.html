@@ -1,218 +1,587 @@
 <div class="container page">
   <div class="header">
-    <h1 class="title">New tournament</h1>
+    <h1 #pageHeading class="title">New tournament</h1>
     <p class="subtitle">Fill out the details to create a tournament.</p>
   </div>
 
   @if (error()) {
-    <div class="alert" role="alert">
+    <div
+      #createErrorAlert
+      class="alert"
+      role="alert"
+      tabindex="-1"
+      aria-live="polite"
+    >
       {{ error() }}
     </div>
   }
 
-  <form class="form" (ngSubmit)="submit()">
+  <form class="form" [formGroup]="tournamentForm" (ngSubmit)="submit()" novalidate>
     <h2 class="section-title">General</h2>
     <div class="grid">
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentName')?.touched && tournamentForm.get('tournamentName')?.invalid
+        "
+        for="tournament-input-tournamentName"
+      >
         <span class="label">Name</span>
         <input
+          id="tournament-input-tournamentName"
           class="control"
-          name="tournamentName"
-          required
-          [(ngModel)]="model.tournamentName"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentName')?.touched && tournamentForm.get('tournamentName')?.invalid
+          "
+          appInputError
+          type="text"
+          formControlName="tournamentName"
+          autocomplete="off"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentName')?.touched && tournamentForm.get('tournamentName')?.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (tournamentForm.get('tournamentName')?.touched && tournamentForm.get('tournamentName')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentName')?.hasError('required')) {
+              This field is required.
+            }
+          </span>
+        }
+      </label>
+
+      <label
+        class="field"
+        for="tournament-input-tournamentOrganizer"
+      >
+        <span class="label">Organizer</span>
+        <input
+          id="tournament-input-tournamentOrganizer"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentOrganizer"
+          autocomplete="organization"
+        />
+      </label>
+
+      <label class="field" for="tournament-input-tournamentCategory">
+        <span class="label">Category</span>
+        <input
+          id="tournament-input-tournamentCategory"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentCategory"
           autocomplete="off"
         />
       </label>
 
-      <label class="field">
-        <span class="label">Organizer</span>
-        <input class="control" name="tournamentOrganizer" [(ngModel)]="model.tournamentOrganizer" />
-      </label>
-
-      <label class="field">
-        <span class="label">Category</span>
-        <input class="control" name="tournamentCategory" [(ngModel)]="model.tournamentCategory" />
-      </label>
-
-      <label class="field">
+      <label class="field" for="tournament-input-tournamentSurface">
         <span class="label">Surface</span>
-        <select class="control" name="tournamentSurface" [(ngModel)]="model.tournamentSurface">
+        <select
+          id="tournament-input-tournamentSurface"
+          class="control"
+          appInputError
+          formControlName="tournamentSurface"
+        >
           @for (opt of surfaceOptions; track opt) {
             <option [value]="opt">{{ opt }}</option>
           }
         </select>
       </label>
 
-      <label class="field">
+      <label class="field" for="tournament-input-tournamentDirector">
         <span class="label">Tournament director</span>
-        <input class="control" name="tournamentDirector" [(ngModel)]="model.tournamentDirector" />
+        <input
+          id="tournament-input-tournamentDirector"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentDirector"
+          autocomplete="off"
+        />
       </label>
 
-      <label class="field">
+      <label class="field" for="tournament-input-officialBall">
         <span class="label">Official ball</span>
-        <input class="control" name="officialBall" [(ngModel)]="model.officialBall" />
+        <input
+          id="tournament-input-officialBall"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="officialBall"
+          autocomplete="off"
+        />
       </label>
 
-      <label class="field">
-        <span class="label">Prize money (optional)</span>
-        <input class="control" name="tournamentPrize" [(ngModel)]="model.tournamentPrize" />
+      <label class="field" for="tournament-input-tournamentPrize">
+        <span class="label">Prize money <span class="label-optional">(optional)</span></span>
+        <input
+          id="tournament-input-tournamentPrize"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentPrize"
+          autocomplete="off"
+        />
       </label>
     </div>
 
     <h2 class="section-title">Location</h2>
     <div class="grid">
-      <label class="field">
+      <label class="field" for="tournament-input-tournamentCountry">
         <span class="label">Country</span>
-        <input class="control" name="tournamentCountry" [(ngModel)]="model.tournamentCountry" />
+        <input
+          id="tournament-input-tournamentCountry"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentCountry"
+          autocomplete="country-name"
+        />
       </label>
 
-      <label class="field">
+      <label class="field" for="tournament-input-tournamentCity">
         <span class="label">City</span>
-        <input class="control" name="tournamentCity" [(ngModel)]="model.tournamentCity" />
+        <input
+          id="tournament-input-tournamentCity"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentCity"
+          autocomplete="address-level2"
+        />
       </label>
 
-      <label class="field field--full">
+      <label class="field field--full" for="tournament-input-tournamentLocation">
         <span class="label">Venue / address</span>
-        <input class="control" name="tournamentLocation" [(ngModel)]="model.tournamentLocation" />
+        <input
+          id="tournament-input-tournamentLocation"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentLocation"
+          autocomplete="street-address"
+        />
       </label>
     </div>
 
     <h2 class="section-title">Dates</h2>
     <div class="grid">
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentStartDate')?.touched && tournamentForm.get('tournamentStartDate')?.invalid
+        "
+        for="tournament-input-tournamentStartDate"
+      >
         <span class="label">Tournament start</span>
         <input
+          id="tournament-input-tournamentStartDate"
           class="control"
-          name="tournamentStartDate"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentStartDate')?.touched && tournamentForm.get('tournamentStartDate')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.tournamentStartDate)"
-          (change)="setDateField('tournamentStartDate', $any($event.target).value)"
+          formControlName="tournamentStartDate"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentStartDate')?.touched && tournamentForm.get('tournamentStartDate')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('tournamentStartDate')?.touched && tournamentForm.get('tournamentStartDate')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentStartDate')?.hasError('required')) {
+              This field is required.
+            } @else if (tournamentForm.get('tournamentStartDate')?.hasError(validationKeys.invalidDate)) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentEndDate')?.touched && tournamentForm.get('tournamentEndDate')?.invalid
+        "
+        for="tournament-input-tournamentEndDate"
+      >
         <span class="label">Tournament end</span>
         <input
+          id="tournament-input-tournamentEndDate"
           class="control"
-          name="tournamentEndDate"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentEndDate')?.touched && tournamentForm.get('tournamentEndDate')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.tournamentEndDate)"
-          (change)="setDateField('tournamentEndDate', $any($event.target).value)"
+          formControlName="tournamentEndDate"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentEndDate')?.touched && tournamentForm.get('tournamentEndDate')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (tournamentForm.get('tournamentEndDate')?.touched && tournamentForm.get('tournamentEndDate')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentEndDate')?.hasError('required')) {
+              This field is required.
+            } @else if (tournamentForm.get('tournamentEndDate')?.hasError(validationKeys.invalidDate)) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('entryDeadline')?.touched && tournamentForm.get('entryDeadline')?.invalid
+        "
+        for="tournament-input-entryDeadline"
+      >
         <span class="label">Entry deadline</span>
         <input
+          id="tournament-input-entryDeadline"
           class="control"
-          name="entryDeadline"
+          [class.control--invalid]="
+            tournamentForm.get('entryDeadline')?.touched && tournamentForm.get('entryDeadline')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.entryDeadline)"
-          (change)="setDateField('entryDeadline', $any($event.target).value)"
+          formControlName="entryDeadline"
+          [attr.aria-invalid]="
+            tournamentForm.get('entryDeadline')?.touched && tournamentForm.get('entryDeadline')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (tournamentForm.get('entryDeadline')?.touched && tournamentForm.get('entryDeadline')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('entryDeadline')?.hasError('required')) {
+              This field is required.
+            } @else if (tournamentForm.get('entryDeadline')?.hasError(validationKeys.invalidDate)) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('withdrawalDeadline')?.touched && tournamentForm.get('withdrawalDeadline')?.invalid
+        "
+        for="tournament-input-withdrawalDeadline"
+      >
         <span class="label">Withdrawal deadline</span>
         <input
+          id="tournament-input-withdrawalDeadline"
           class="control"
-          name="withdrawalDeadline"
+          [class.control--invalid]="
+            tournamentForm.get('withdrawalDeadline')?.touched && tournamentForm.get('withdrawalDeadline')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.withdrawalDeadline)"
-          (change)="setDateField('withdrawalDeadline', $any($event.target).value)"
+          formControlName="withdrawalDeadline"
+          [attr.aria-invalid]="
+            tournamentForm.get('withdrawalDeadline')?.touched && tournamentForm.get('withdrawalDeadline')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('withdrawalDeadline')?.touched && tournamentForm.get('withdrawalDeadline')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('withdrawalDeadline')?.hasError('required')) {
+              This field is required.
+            } @else if (tournamentForm.get('withdrawalDeadline')?.hasError(validationKeys.invalidDate)) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('singlesQualifyingSignIn')?.touched &&
+          tournamentForm.get('singlesQualifyingSignIn')?.invalid
+        "
+        for="tournament-input-singlesQualifyingSignIn"
+      >
         <span class="label">Singles qualifying sign-in (date &amp; time)</span>
         <input
+          id="tournament-input-singlesQualifyingSignIn"
           class="control"
-          name="singlesQualifyingSignIn"
+          [class.control--invalid]="
+            tournamentForm.get('singlesQualifyingSignIn')?.touched &&
+            tournamentForm.get('singlesQualifyingSignIn')?.invalid
+          "
+          appInputError
           type="datetime-local"
           step="60"
-          [value]="formatDateTimeLocal(model.singlesQualifyingSignIn)"
-          (change)="setDateTimeField('singlesQualifyingSignIn', $any($event.target).value)"
+          formControlName="singlesQualifyingSignIn"
+          [attr.aria-invalid]="
+            tournamentForm.get('singlesQualifyingSignIn')?.touched &&
+            tournamentForm.get('singlesQualifyingSignIn')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('singlesQualifyingSignIn')?.touched &&
+          tournamentForm.get('singlesQualifyingSignIn')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('singlesQualifyingSignIn')?.hasError('required')) {
+              This field is required.
+            } @else if (
+              tournamentForm.get('singlesQualifyingSignIn')?.hasError(validationKeys.invalidDate)
+            ) {
+              Enter a valid date and time.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('singlesMainDrawSignIn')?.touched &&
+          tournamentForm.get('singlesMainDrawSignIn')?.invalid
+        "
+        for="tournament-input-singlesMainDrawSignIn"
+      >
         <span class="label">Singles main draw sign-in (date &amp; time)</span>
         <input
+          id="tournament-input-singlesMainDrawSignIn"
           class="control"
-          name="singlesMainDrawSignIn"
+          [class.control--invalid]="
+            tournamentForm.get('singlesMainDrawSignIn')?.touched &&
+            tournamentForm.get('singlesMainDrawSignIn')?.invalid
+          "
+          appInputError
           type="datetime-local"
           step="60"
-          [value]="formatDateTimeLocal(model.singlesMainDrawSignIn)"
-          (change)="setDateTimeField('singlesMainDrawSignIn', $any($event.target).value)"
+          formControlName="singlesMainDrawSignIn"
+          [attr.aria-invalid]="
+            tournamentForm.get('singlesMainDrawSignIn')?.touched &&
+            tournamentForm.get('singlesMainDrawSignIn')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('singlesMainDrawSignIn')?.touched &&
+          tournamentForm.get('singlesMainDrawSignIn')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('singlesMainDrawSignIn')?.hasError('required')) {
+              This field is required.
+            } @else if (tournamentForm.get('singlesMainDrawSignIn')?.hasError(validationKeys.invalidDate)) {
+              Enter a valid date and time.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('firstDaySinglesQualifying')?.touched &&
+          tournamentForm.get('firstDaySinglesQualifying')?.invalid
+        "
+        for="tournament-input-firstDaySinglesQualifying"
+      >
         <span class="label">First day singles qualifying</span>
         <input
+          id="tournament-input-firstDaySinglesQualifying"
           class="control"
-          name="firstDaySinglesQualifying"
+          [class.control--invalid]="
+            tournamentForm.get('firstDaySinglesQualifying')?.touched &&
+            tournamentForm.get('firstDaySinglesQualifying')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.firstDaySinglesQualifying)"
-          (change)="setDateField('firstDaySinglesQualifying', $any($event.target).value)"
+          formControlName="firstDaySinglesQualifying"
+          [attr.aria-invalid]="
+            tournamentForm.get('firstDaySinglesQualifying')?.touched &&
+            tournamentForm.get('firstDaySinglesQualifying')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('firstDaySinglesQualifying')?.touched &&
+          tournamentForm.get('firstDaySinglesQualifying')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('firstDaySinglesQualifying')?.hasError('required')) {
+              This field is required.
+            } @else if (
+              tournamentForm.get('firstDaySinglesQualifying')?.hasError(validationKeys.invalidDate)
+            ) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('firstDaySinglesMainDraw')?.touched &&
+          tournamentForm.get('firstDaySinglesMainDraw')?.invalid
+        "
+        for="tournament-input-firstDaySinglesMainDraw"
+      >
         <span class="label">First day singles main draw</span>
         <input
+          id="tournament-input-firstDaySinglesMainDraw"
           class="control"
-          name="firstDaySinglesMainDraw"
+          [class.control--invalid]="
+            tournamentForm.get('firstDaySinglesMainDraw')?.touched &&
+            tournamentForm.get('firstDaySinglesMainDraw')?.invalid
+          "
+          appInputError
           type="date"
-          [value]="formatDateInput(model.firstDaySinglesMainDraw)"
-          (change)="setDateField('firstDaySinglesMainDraw', $any($event.target).value)"
+          formControlName="firstDaySinglesMainDraw"
+          [attr.aria-invalid]="
+            tournamentForm.get('firstDaySinglesMainDraw')?.touched &&
+            tournamentForm.get('firstDaySinglesMainDraw')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (
+          tournamentForm.get('firstDaySinglesMainDraw')?.touched &&
+          tournamentForm.get('firstDaySinglesMainDraw')?.invalid
+        ) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('firstDaySinglesMainDraw')?.hasError('required')) {
+              This field is required.
+            } @else if (
+              tournamentForm.get('firstDaySinglesMainDraw')?.hasError(validationKeys.invalidDate)
+            ) {
+              Enter a valid date.
+            }
+          </span>
+        }
       </label>
     </div>
 
     <h2 class="section-title">Draw sizes</h2>
     <div class="grid">
-      <label class="field">
+      <label class="field" for="tournament-input-singlesMainDrawSize">
         <span class="label">Singles main draw size</span>
-        <input class="control" name="singlesMainDrawSize" [(ngModel)]="model.singlesMainDrawSize" />
-      </label>
-
-      <label class="field">
-        <span class="label">Singles qualifying draw size (optional)</span>
         <input
+          id="tournament-input-singlesMainDrawSize"
           class="control"
-          name="singlesQualifyingDrawSize"
-          [(ngModel)]="model.singlesQualifyingDrawSize"
+          appInputError
+          type="text"
+          formControlName="singlesMainDrawSize"
+          autocomplete="off"
         />
       </label>
 
-      <label class="field">
-        <span class="label">Doubles main draw size (optional)</span>
-        <input class="control" name="doublesMainDrawSize" [(ngModel)]="model.doublesMainDrawSize" />
+      <label class="field" for="tournament-input-singlesQualifyingDrawSize">
+        <span class="label">Singles qualifying draw size <span class="label-optional">(optional)</span></span>
+        <input
+          id="tournament-input-singlesQualifyingDrawSize"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="singlesQualifyingDrawSize"
+          autocomplete="off"
+        />
+      </label>
+
+      <label class="field" for="tournament-input-doublesMainDrawSize">
+        <span class="label">Doubles main draw size <span class="label-optional">(optional)</span></span>
+        <input
+          id="tournament-input-doublesMainDrawSize"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="doublesMainDrawSize"
+          autocomplete="off"
+        />
       </label>
     </div>
 
     <h2 class="section-title">Contact &amp; image</h2>
     <div class="grid">
-      <label class="field">
+      <label class="field" for="tournament-input-tournamentContact">
         <span class="label">Contact</span>
-        <input class="control" name="tournamentContact" [(ngModel)]="model.tournamentContact" />
+        <input
+          id="tournament-input-tournamentContact"
+          class="control"
+          appInputError
+          type="text"
+          formControlName="tournamentContact"
+          autocomplete="off"
+        />
       </label>
 
-      <label class="field">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentEmail')?.touched && tournamentForm.get('tournamentEmail')?.invalid
+        "
+        for="tournament-input-tournamentEmail"
+      >
         <span class="label">Email</span>
-        <input class="control" name="tournamentEmail" type="email" [(ngModel)]="model.tournamentEmail" />
+        <input
+          id="tournament-input-tournamentEmail"
+          class="control"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentEmail')?.touched && tournamentForm.get('tournamentEmail')?.invalid
+          "
+          appInputError
+          type="email"
+          formControlName="tournamentEmail"
+          autocomplete="email"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentEmail')?.touched && tournamentForm.get('tournamentEmail')?.invalid
+              ? 'true'
+              : null
+          "
+        />
+        @if (tournamentForm.get('tournamentEmail')?.touched && tournamentForm.get('tournamentEmail')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentEmail')?.hasError(validationKeys.invalidEmail)) {
+              Please enter a valid email address (e.g. name@example.com — include @ and a dot in the domain).
+            }
+          </span>
+        }
       </label>
 
-      <label class="field field--full">
+      <label class="field field--full" for="tournament-input-tournamentImageUrl">
         <span class="label">Image URL</span>
-        <input class="control" name="tournamentImageUrl" [(ngModel)]="model.tournamentImageUrl" />
+        <input
+          id="tournament-input-tournamentImageUrl"
+          class="control"
+          appInputError
+          type="url"
+          formControlName="tournamentImageUrl"
+          autocomplete="off"
+        />
       </label>
     </div>
 
     <div class="actions">
-      <button class="btn primary" type="submit" [disabled]="saving()">
-        {{ saving() ? 'Saving…' : 'Create tournament' }}
+      <button class="btn primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Saving…' : 'Create tournament' }}
       </button>
       <a class="btn ghost" routerLink="/tournaments">Cancel</a>
     </div>

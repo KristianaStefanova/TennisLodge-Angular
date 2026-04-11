@@ -28,3 +28,5 @@ export interface Tournament {
   singlesQualifyingDrawSize?: string;
   doublesMainDrawSize?: string;
 }
+
+export interface CreateTournamentData extends Omit<Tournament, '_id' | 'createdAt' | 'ownerId'> {}

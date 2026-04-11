@@ -66,6 +66,20 @@
   color: var(--color-text-muted);
 }
 
+.label-optional {
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.field--invalid .label {
+  color: var(--color-text, #111827);
+}
+
+.field-error {
+  font-size: var(--text-sm);
+  color: var(--color-danger, #e11d48);
+}
+
 .control {
   width: 100%;
   padding: var(--space-3) var(--space-4);
@@ -73,6 +87,15 @@
   border: 1px solid var(--color-border, #e5e7eb);
   background: var(--color-surface, #fff);
   color: inherit;
+}
+
+.control--invalid,
+.control.input-error {
+  border-color: var(--color-danger, #e11d48);
+}
+
+.control.input-error:focus-visible {
+  outline-color: var(--color-danger, #e11d48);
 }
 
 .actions {

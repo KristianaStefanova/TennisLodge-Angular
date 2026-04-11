@@ -4,32 +4,22 @@
       <header class="profile__header">
         <div class="profile__header-text">
           <p class="profile__kicker">Tennis Lodge</p>
-          <h1 id="profile-title" class="profile__title">Your profile</h1>
-          <p class="profile__lead">Account details from your session. Keep this information up to date.</p>
+          <h1 #profileHeading id="profile-title" class="profile__title">Your profile</h1>
+          <p class="profile__lead">
+            Manage your photo and account details. Changes to username, email, or phone are saved when you confirm.
+          </p>
         </div>
         <div class="profile__toolbar">
           <button
             type="button"
             class="profile__btn profile__btn--secondary"
             (click)="refreshProfile()"
-            [disabled]="refreshing()"
+            [disabled]="refreshing() || profileSaving()"
           >
             {{ refreshing() ? 'Refreshing…' : 'Refresh' }}
           </button>
-          <button type="button" class="profile__btn profile__btn--primary" (click)="onEditProfileClick()">
-            Edit profile
-          </button>
         </div>
       </header>
-
-      @if (editNoticeVisible()) {
-        <div class="profile__notice" role="status" aria-live="polite">
-          <p class="profile__notice-text">
-            Profile editing is not available yet. You will be able to update your details here in a future update.
-          </p>
-          <button type="button" class="profile__notice-dismiss" (click)="dismissEditNotice()">Dismiss</button>
-        </div>
-      }
 
       @if (loadError()) {
         <div class="profile__alert" role="alert">
@@ -40,6 +30,18 @@
       @if (pictureError()) {
         <div class="profile__alert" role="alert">
           {{ pictureError() }}
+        </div>
+      }
+
+      @if (profileSaveError()) {
+        <div
+          #profileSaveAlert
+          class="profile__alert"
+          role="alert"
+          tabindex="-1"
+          aria-live="polite"
+        >
+          {{ profileSaveError() }}
         </div>
       }
 
@@ -74,46 +76,188 @@
               }
             </div>
             <p class="profile__name">{{ displayName() }}</p>
-            <p class="profile__username">&#64;{{ u.username }}</p>
+            <p class="profile__handle" aria-label="Username">&#64;{{ u.username }}</p>
             <div class="profile__photo-actions">
               <button
                 type="button"
                 class="profile__btn profile__btn--secondary profile__btn--compact"
                 (click)="openPicturePicker()"
-                [disabled]="pictureUploading()"
+                [disabled]="pictureUploading() || profileSaving()"
               >
-                {{ pictureUploading() ? 'Uploading…' : 'Upload new photo' }}
+                {{ pictureUploading() ? 'Uploading…' : 'Change photo' }}
               </button>
               <span class="profile__photo-hint">JPEG, PNG, GIF, or WebP · max 2&nbsp;MB</span>
             </div>
           </div>
 
-          <dl class="profile__fields">
-            <div class="profile__row">
-              <dt class="profile__dt">Full name</dt>
-              <dd class="profile__dd">{{ u.firstName }} {{ u.lastName }}</dd>
-            </div>
-            <div class="profile__row">
-              <dt class="profile__dt">Email</dt>
-              <dd class="profile__dd">
-                <a class="profile__link" [href]="'mailto:' + u.email">{{ u.email }}</a>
-              </dd>
-            </div>
-            <div class="profile__row">
-              <dt class="profile__dt">Username</dt>
-              <dd class="profile__dd">{{ u.username }}</dd>
-            </div>
-            <div class="profile__row">
-              <dt class="profile__dt">Phone</dt>
-              <dd class="profile__dd">
-                @if (u.tel) {
-                  <a class="profile__link" [href]="'tel:' + u.tel">{{ u.tel }}</a>
-                } @else {
-                  <span class="profile__empty">Not provided</span>
+          <div class="profile__main">
+            <div
+              id="profile-details-content"
+              class="profile__details-panel"
+              role="region"
+              aria-labelledby="profile-details-title"
+            >
+              <div class="profile__panel-header">
+                <div class="profile__panel-header-text">
+                  <h2 id="profile-details-title" class="profile__panel-title">Account details</h2>
+                  <p class="profile__panel-desc">
+                    @if (detailsEditing()) {
+                      Edit the fields below, then save or cancel.
+                    } @else {
+                      Username, email, and phone on file. Select Edit to make changes.
+                    }
+                  </p>
+                </div>
+                @if (!detailsEditing()) {
+                  <button
+                    type="button"
+                    class="profile__btn profile__btn--secondary profile__btn--sm"
+                    (click)="startEditingDetails()"
+                    [disabled]="refreshing() || profileSaving()"
+                    aria-controls="profile-details-content"
+                    [attr.aria-expanded]="false"
+                  >
+                    Edit
+                  </button>
                 }
-              </dd>
+              </div>
+
+              <div class="profile__panel-body">
+                @if (!detailsEditing()) {
+                  <dl class="profile__summary">
+                    <div class="profile__summary-row">
+                      <dt class="profile__summary-dt">Full name</dt>
+                      <dd class="profile__summary-dd">{{ u.firstName }} {{ u.lastName }}</dd>
+                    </div>
+                    <div class="profile__summary-row">
+                      <dt class="profile__summary-dt">Username</dt>
+                      <dd class="profile__summary-dd profile__summary-dd--mono">{{ u.username }}</dd>
+                    </div>
+                    <div class="profile__summary-row">
+                      <dt class="profile__summary-dt">Email</dt>
+                      <dd class="profile__summary-dd">
+                        <a class="profile__link" [href]="'mailto:' + u.email">{{ u.email }}</a>
+                      </dd>
+                    </div>
+                    <div class="profile__summary-row profile__summary-row--last">
+                      <dt class="profile__summary-dt">Phone</dt>
+                      <dd class="profile__summary-dd">
+                        @if (u.tel) {
+                          <a class="profile__link" [href]="'tel:' + u.tel">{{ u.tel }}</a>
+                        } @else {
+                          <span class="profile__empty">Not provided</span>
+                        }
+                      </dd>
+                    </div>
+                  </dl>
+                } @else {
+                  <form class="profile__form" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+                    <label
+                      class="profile__field"
+                      [class.profile__field--invalid]="
+                        profileForm.get('username')?.touched && profileForm.get('username')?.invalid
+                      "
+                      for="profile-input-username"
+                    >
+                      <span class="profile__label">Username</span>
+                      <input
+                        id="profile-input-username"
+                        class="profile__control"
+                        [class.profile__control--invalid]="
+                          profileForm.get('username')?.touched && profileForm.get('username')?.invalid
+                        "
+                        appInputError
+                        type="text"
+                        formControlName="username"
+                        autocomplete="username"
+                        [attr.aria-invalid]="
+                          profileForm.get('username')?.touched && profileForm.get('username')?.invalid
+                            ? 'true'
+                            : null
+                        "
+                      />
+                      @if (profileForm.get('username')?.touched && profileForm.get('username')?.invalid) {
+                        <span class="profile__field-error" role="alert">
+                          @if (profileForm.get('username')?.hasError('required')) {
+                            This field is required.
+                          } @else if (profileForm.get('username')?.hasError(validationKeys.usernameLetters)) {
+                            Username must be at least 3 letters (A–Z only, no numbers or spaces).
+                          }
+                        </span>
+                      }
+                      <span class="profile__hint">At least 3 letters (A–Z), no numbers or spaces.</span>
+                    </label>
+
+                    <label
+                      class="profile__field"
+                      [class.profile__field--invalid]="
+                        profileForm.get('email')?.touched && profileForm.get('email')?.invalid
+                      "
+                      for="profile-input-email"
+                    >
+                      <span class="profile__label">Email</span>
+                      <input
+                        id="profile-input-email"
+                        class="profile__control"
+                        [class.profile__control--invalid]="
+                          profileForm.get('email')?.touched && profileForm.get('email')?.invalid
+                        "
+                        appInputError
+                        type="email"
+                        formControlName="email"
+                        autocomplete="email"
+                        [attr.aria-invalid]="
+                          profileForm.get('email')?.touched && profileForm.get('email')?.invalid
+                            ? 'true'
+                            : null
+                        "
+                      />
+                      @if (profileForm.get('email')?.touched && profileForm.get('email')?.invalid) {
+                        <span class="profile__field-error" role="alert">
+                          @if (profileForm.get('email')?.hasError('required')) {
+                            This field is required.
+                          } @else if (profileForm.get('email')?.hasError(validationKeys.invalidEmail)) {
+                            Please enter a valid email address (e.g. name@example.com — include @ and a dot in the domain).
+                          }
+                        </span>
+                      }
+                      <span class="profile__hint">Format: name@example.com (needs @ and a dot in the domain).</span>
+                    </label>
+
+                    <label class="profile__field" for="profile-input-tel">
+                      <span class="profile__label">Phone <span class="profile__optional">(optional)</span></span>
+                      <input
+                        id="profile-input-tel"
+                        class="profile__control"
+                        appInputError
+                        type="tel"
+                        formControlName="tel"
+                        autocomplete="tel"
+                      />
+                    </label>
+
+                    <div class="profile__form-actions">
+                      <button
+                        class="profile__btn profile__btn--primary"
+                        type="submit"
+                        [disabled]="profileSaving()"
+                      >
+                        {{ profileSaving() ? 'Saving…' : 'Save changes' }}
+                      </button>
+                      <button
+                        type="button"
+                        class="profile__btn profile__btn--ghost"
+                        (click)="cancelEditingDetails()"
+                        [disabled]="profileSaving()"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                }
+              </div>
             </div>
-          </dl>
+          </div>
         </div>
       } @else {
         <p class="profile__empty-state">No profile data loaded.</p>

@@ -1,9 +1,6 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { validationKeys } from './validation-keys';
 
-/**
- * FormGroup validator: compares `password` and `repeatPassword`.
- */
 export function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password');
   const repeatPassword = control.get('repeatPassword');

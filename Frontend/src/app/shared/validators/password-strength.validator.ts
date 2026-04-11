@@ -3,7 +3,6 @@ import { passwordStrengthReason, validationKeys } from './validation-keys';
 
 export type { PasswordStrengthReason } from './validation-keys';
 
-/** Min 5 chars + at least one letter and one digit. Empty defers to `required`. */
 export function passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
   const v = control.value;
   if (v == null || v === '') {

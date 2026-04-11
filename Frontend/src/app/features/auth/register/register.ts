@@ -5,12 +5,13 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 import type { RegisterPayload } from '../../../shared/interfaces/user.dto';
+import { InputErrorDirective } from '../../../shared/directives/input-error.directive';
 import { passwordStrengthReason, validationKeys } from '../../../shared/validators/validation-keys';
 import { createRegisterForm } from './register-form';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, InputErrorDirective],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

@@ -26,7 +26,7 @@ export class AuthService {
     return this.userService.getProfile().pipe(
       tap((u) => this._user.set(u)),
       catchError(() => {
-        this._user.set(null);
+        this.clearSession();
         return of(null);
       }),
     );
@@ -54,10 +54,10 @@ export class AuthService {
 
   logout(): Observable<void> {
     return this.http.post<void>('/api/logout', {}, { withCredentials: true }).pipe(
-      tap(() => this._user.set(null)),
+      tap(() => this.clearSession()),
       map(() => undefined),
       catchError((err) => {
-        this._user.set(null);
+        this.clearSession();
         return this.handleError(err);
       }),
     );
@@ -72,6 +72,10 @@ export class AuthService {
 
   setSessionUser(user: User): void {
     this._user.set(user);
+  }
+
+  clearSession(): void {
+    this._user.set(null);
   }
 
   private handleError(err: unknown): Observable<never> {

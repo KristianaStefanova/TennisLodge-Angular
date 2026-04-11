@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Tournament } from '../../shared/interfaces/tournament';
+import { CreateTournamentData, Tournament } from '../../shared/interfaces/tournament';
 import { TournamentApiDto } from '../../shared/interfaces/tournament.dto';
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +28,7 @@ export class TournamentsApi {
     );
   }
 
-  create(payload: Tournament): Observable<Tournament> {
+  create(payload: CreateTournamentData): Observable<Tournament> {
     return this.http
       .post<TournamentApiDto>(this.baseUrl, payload, { withCredentials: true })
       .pipe(
