@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
 import type { User } from '../../shared/interfaces/user';
+import { NotificationService } from '../../core/services/notification.service';
 
 function initialsFromUser(u: User | null | undefined): string {
   if (!u) {
@@ -25,6 +26,7 @@ function initialsFromUser(u: User | null | undefined): string {
 })
 export class Header {
   readonly auth = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
 
   private readonly headerAvatarBroken = signal(false);
@@ -37,6 +39,7 @@ export class Header {
   });
 
   readonly headerUserInitials = computed(() => initialsFromUser(this.auth.user()));
+  readonly notification = this.notificationService.notification;
 
   constructor() {
     effect(() => {
@@ -47,8 +50,14 @@ export class Header {
 
   logout(): void {
     this.auth.logout().subscribe({
-      next: () => void this.router.navigateByUrl('/'),
-      error: () => void this.router.navigateByUrl('/'),
+      next: () => {
+        this.notificationService.showSuccess('You have logged out successfully.');
+        void this.router.navigateByUrl('/');
+      },
+      error: () => {
+        this.notificationService.showError('Could not log out. Please try again.');
+        void this.router.navigateByUrl('/');
+      },
     });
   }
 

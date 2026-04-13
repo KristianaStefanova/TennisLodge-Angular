@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import type { LoginCredentials } from '../../../shared/interfaces/user.dto';
 import { InputErrorDirective } from '../../../shared/directives/input-error.directive';
 import { validationKeys } from '../../../shared/validators/validation-keys';
@@ -17,6 +18,7 @@ import { createLoginForm } from './login-form';
 })
 export class Login {
   private readonly auth = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly injector = inject(Injector);
@@ -53,11 +55,13 @@ export class Login {
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: async () => {
+          this.notificationService.showSuccess('Welcome back!');
           await this.router.navigateByUrl(this.postLoginTarget());
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not sign in.';
           this.error.set(msg);
+          this.notificationService.showError(msg);
           this.scrollAlertIntoView();
         },
       });

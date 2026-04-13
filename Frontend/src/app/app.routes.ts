@@ -1,30 +1,64 @@
 import { Routes } from '@angular/router';
-import { Home } from './features/home/home';
-import { TournamentDetailShellPage } from './features/tournaments/pages/tournament-detail/tournament-detail-shell.page';
-import { TournamentDetailPage } from './features/tournaments/pages/tournament-detail/tournament-detail.page';
 import { tournamentDetailResolver } from './features/tournaments/pages/tournament-detail/tournament-detail.resolver';
-import { TournamentListPage } from './features/tournaments/pages/tournament-list/tournament-list.page';
-import { TournamentNewPage } from './features/tournaments/pages/tournament-new/tournament-new.page';
-import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
-import { Profile } from './features/profile/profile';
-import { NotFound } from './features/not-found/not-found';
-import { PlaceholderPage } from './pages/placeholder.page';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', component: Home },
-  { path: 'tournaments/new', component: TournamentNewPage, canActivate: [authGuard] },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () => import('./features/home/home').then((m) => m.Home),
+  },
+  {
+    path: 'tournaments/new',
+    loadComponent: () =>
+      import('./features/tournaments/pages/tournament-new/tournament-new.page').then(
+        (m) => m.TournamentNewPage,
+      ),
+    canActivate: [authGuard],
+  },
   {
     path: 'tournaments/:id',
-    component: TournamentDetailShellPage,
+    loadComponent: () =>
+      import('./features/tournaments/pages/tournament-detail/tournament-detail-shell.page').then(
+        (m) => m.TournamentDetailShellPage,
+      ),
     resolve: { tournament: tournamentDetailResolver },
-    children: [{ path: '', component: TournamentDetailPage }],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/tournaments/pages/tournament-detail/tournament-detail.page').then(
+            (m) => m.TournamentDetailPage,
+          ),
+      },
+    ],
   },
-  { path: 'tournaments', component: TournamentListPage },
-  { path: 'accommodations', component: PlaceholderPage },
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
-  { path: 'profile', component: Profile, canActivate: [authGuard] },
-  { path: '**', component: NotFound },
+  {
+    path: 'tournaments',
+    loadComponent: () =>
+      import('./features/tournaments/pages/tournament-list/tournament-list.page').then(
+        (m) => m.TournamentListPage,
+      ),
+  },
+  {
+    path: 'accommodations',
+    loadComponent: () => import('./pages/placeholder.page').then((m) => m.PlaceholderPage),
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+    canActivate: [authGuard],
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),
+  },
 ];

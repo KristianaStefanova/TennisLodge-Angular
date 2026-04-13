@@ -88,3 +88,11 @@
     </ul>
   </nav>
 </header>
+
+@if (notification(); as currentNotification) {
+  <div class="notification-toast-wrap" aria-live="assertive" aria-atomic="true">
+    <div class="notification-toast" [class.notification-toast--error]="currentNotification.type === 'error'">
+      {{ currentNotification.message }}
+    </div>
+  </div>
+}

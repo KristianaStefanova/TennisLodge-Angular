@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { UserService } from '../../core/services/user.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
 import { InputErrorDirective } from '../../shared/directives/input-error.directive';
@@ -38,6 +39,7 @@ const PROFILE_FIELD_FOCUS_ORDER: (keyof ProfileFormControls)[] = ['username', 'e
 })
 export class Profile implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly pageTitle = inject(Title);
   private readonly injector = inject(Injector);
@@ -157,10 +159,12 @@ export class Profile implements OnInit {
           this.profileForm.markAsPristine();
           this.profileForm.markAsUntouched();
           this.detailsEditing.set(false);
+          this.notificationService.showSuccess('Profile updated successfully.');
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not save your profile.';
           this.profileSaveError.set(msg);
+          this.notificationService.showError(msg);
           this.scrollProfileSaveErrorIntoView();
         },
       });
@@ -270,10 +274,12 @@ export class Profile implements OnInit {
         next: (u) => {
           this.auth.setSessionUser(u);
           this.avatarBroken.set(false);
+          this.notificationService.showSuccess('Profile picture updated successfully.');
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not update your photo.';
           this.pictureError.set(msg);
+          this.notificationService.showError(msg);
         },
       });
   }

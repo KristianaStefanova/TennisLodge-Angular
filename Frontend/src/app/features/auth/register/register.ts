@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import type { RegisterPayload } from '../../../shared/interfaces/user.dto';
 import { InputErrorDirective } from '../../../shared/directives/input-error.directive';
 import { passwordStrengthReason, validationKeys } from '../../../shared/validators/validation-keys';
@@ -17,6 +18,7 @@ import { createRegisterForm } from './register-form';
 })
 export class Register {
   private readonly auth = inject(AuthService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
 
@@ -70,11 +72,13 @@ export class Register {
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: async () => {
+          this.notificationService.showSuccess('Account created successfully.');
           await this.router.navigateByUrl('/');
         },
         error: (e: unknown) => {
           const msg = e instanceof Error ? e.message : 'Could not create account.';
           this.error.set(msg);
+          this.notificationService.showError(msg);
           this.scrollAlertIntoView();
         },
       });

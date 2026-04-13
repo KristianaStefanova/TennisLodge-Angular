@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { TournamentsApi } from '../../../../core/services/tournaments.service';
 import { InputErrorDirective } from '../../../../shared/directives/input-error.directive';
 import { CreateTournamentData } from '../../../../shared/interfaces/tournament';
@@ -46,6 +47,7 @@ const TOURNAMENT_FIELD_FOCUS_ORDER: (keyof TournamentNewFormControls)[] = [
 })
 export class TournamentNewPage {
   private readonly tournamentsApi = inject(TournamentsApi);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
 
@@ -82,6 +84,7 @@ export class TournamentNewPage {
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: async () => {
+          this.notificationService.showSuccess('Tournament created successfully.');
           await this.router.navigateByUrl('/tournaments');
         },
         error: (e: unknown) => {
@@ -92,7 +95,9 @@ export class TournamentNewPage {
               : typeof err?.message === 'string'
                 ? err.message
                 : null;
-          this.error.set(msg || 'Could not create tournament. Make sure you are logged in.');
+          const errorMessage = msg || 'Could not create tournament. Make sure you are logged in.';
+          this.error.set(errorMessage);
+          this.notificationService.showError(errorMessage);
           this.scrollCreateErrorIntoView();
         },
       });
