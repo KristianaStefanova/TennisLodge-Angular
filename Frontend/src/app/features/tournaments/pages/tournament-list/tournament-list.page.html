@@ -11,16 +11,35 @@
       <a routerLink="/tournaments/new" class="tlist__cta">Host a tournament</a>
     </header>
 
-    @if (loading()) {
+    @if (loading$ | async) {
       <div class="tlist__state" role="status" aria-live="polite">
         <span class="tlist__spinner" aria-hidden="true"></span>
         Loading tournaments…
       </div>
-    } @else if (error()) {
+    } @else if (error$ | async; as error) {
       <div class="tlist__alert" role="alert">
-        {{ error() }}
+        {{ error }}
       </div>
-    } @else if (tournaments().length === 0) {
+    } @else if (tournaments$ | async; as tournaments) {
+      @if (tournaments.length === 0) {
+        <div class="tlist__empty">
+          <h2 class="tlist__empty-title">No tournaments yet</h2>
+          <p class="tlist__empty-text">
+            When organizers publish events, they will appear here. You can create one if you are
+            logged in.
+          </p>
+          <a routerLink="/tournaments/new" class="tlist__cta tlist__cta--ghost">Create the first tournament</a>
+        </div>
+      } @else {
+        <ul class="tlist__grid">
+          @for (t of tournaments; track t._id) {
+            <li class="tlist__cell">
+              <app-tournament-item [tournament]="t"></app-tournament-item>
+            </li>
+          }
+        </ul>
+      }
+    } @else {
       <div class="tlist__empty">
         <h2 class="tlist__empty-title">No tournaments yet</h2>
         <p class="tlist__empty-text">
@@ -29,14 +48,6 @@
         </p>
         <a routerLink="/tournaments/new" class="tlist__cta tlist__cta--ghost">Create the first tournament</a>
       </div>
-    } @else {
-      <ul class="tlist__grid">
-        @for (t of tournaments(); track t._id) {
-          <li class="tlist__cell">
-            <app-tournament-item [tournament]="t"></app-tournament-item>
-          </li>
-        }
-      </ul>
     }
   </div>
 </section>

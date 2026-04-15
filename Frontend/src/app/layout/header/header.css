@@ -56,19 +56,7 @@
 .logo-wrap {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
   min-width: 0;
-}
-
-.header-logo {
-  display: block;
-  width: 2.5rem !important;
-  height: 2.5rem !important;
-  max-width: none !important;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.1);
-  object-fit: contain;
-  flex-shrink: 0;
 }
 
 .logo {

@@ -1,34 +1,31 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { RouterLink } from '@angular/router';
-import { finalize } from 'rxjs/operators';
-import { TournamentsApi } from '../../../../core/services/tournaments.service';
-import { Tournament } from '../../../../shared/interfaces/tournament';
+import { Observable } from 'rxjs';
 import { TournamentItemComponent } from '../../components/tournament-item/tournament-item.component';
+import { loadTournaments } from '../../../../store/tournaments/tournament.actions';
+import { Tournament } from '../../../../shared/interfaces/tournament.interface';
+import {
+  selectAllTournaments,
+  selectTournamentsError,
+  selectTournamentsLoading,
+} from '../../../../store/tournaments/tournament.selectors';
 
 @Component({
   selector: 'app-tournament-list-page',
-  imports: [RouterLink, TournamentItemComponent],
+  imports: [RouterLink, TournamentItemComponent, AsyncPipe],
   templateUrl: './tournament-list.page.html',
   styleUrl: './tournament-list.page.css',
 })
 export class TournamentListPage implements OnInit {
-  private readonly api = inject(TournamentsApi);
+  private readonly store = inject(Store);
 
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
-  readonly tournaments = signal<Tournament[]>([]);
+  readonly loading$: Observable<boolean> = this.store.select(selectTournamentsLoading);
+  readonly error$: Observable<string | null> = this.store.select(selectTournamentsError);
+  readonly tournaments$: Observable<Tournament[]> = this.store.select(selectAllTournaments);
 
   ngOnInit(): void {
-    this.error.set(null);
-    this.api
-      .getAll()
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: (items: Tournament[]) => this.tournaments.set(items),
-        error: (e: unknown) => {
-          const msg = e instanceof Error ? e.message : 'Could not load tournaments.';
-          this.error.set(msg);
-        },
-      });
+    this.store.dispatch(loadTournaments());
   }
 }

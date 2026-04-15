@@ -18,7 +18,9 @@
     </div>
     <div class="tcard__body">
       <p class="tcard__meta">
-        {{ tournament().tournamentStartDate | date: 'mediumDate' }} · {{ tournament().tournamentSurface }}
+        {{ tournament().tournamentStartDate | date: 'mediumDate' }} ·
+        {{ tournament().tournamentStartDate | daysUntil: daysUntilRefresh.tick() }} ·
+        {{ tournament().tournamentSurface }}
       </p>
       <h2 class="tcard__name">{{ tournament().tournamentName }}</h2>
       <p class="tcard__loc">

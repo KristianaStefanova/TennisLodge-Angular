@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { tournamentDetailResolver } from './features/tournaments/pages/tournament-detail/tournament-detail.resolver';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -22,7 +21,6 @@ export const routes: Routes = [
       import('./features/tournaments/pages/tournament-detail/tournament-detail-shell.page').then(
         (m) => m.TournamentDetailShellPage,
       ),
-    resolve: { tournament: tournamentDetailResolver },
     children: [
       {
         path: '',

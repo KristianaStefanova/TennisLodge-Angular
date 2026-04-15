@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { CreateTournamentData, Tournament } from '../../shared/interfaces/tournament';
+import { CreateTournamentData, Tournament } from '../../shared/interfaces/tournament.interface';
 import { TournamentApiDto } from '../../shared/interfaces/tournament.dto';
 
 @Injectable({ providedIn: 'root' })

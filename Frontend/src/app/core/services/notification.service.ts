@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Notification } from '../../shared/interfaces/notification';
+import { Notification } from '../../shared/interfaces/notification.interface';
 
 @Injectable({
   providedIn: 'root',

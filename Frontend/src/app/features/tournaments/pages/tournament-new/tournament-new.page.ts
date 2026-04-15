@@ -1,14 +1,15 @@
 import { afterNextRender, Component, ElementRef, inject, Injector, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Actions, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs/operators';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { TournamentsApi } from '../../../../core/services/tournaments.service';
 import { InputErrorDirective } from '../../../../shared/directives/input-error.directive';
-import { CreateTournamentData } from '../../../../shared/interfaces/tournament';
+import { CreateTournamentData } from '../../../../shared/interfaces/tournament.interface';
 import { TOURNAMENT_SURFACE_OPTIONS } from '../../../../shared/constants/tournament-surfaces';
 import { validationKeys } from '../../../../shared/validators/validation-keys';
+import * as TournamentActions from '../../../../store/tournaments/tournament.actions';
 import { createTournamentNewForm } from './tournament-new-form';
 import type { TournamentNewFormControls } from './tournament-new-form.types';
 
@@ -46,7 +47,8 @@ const TOURNAMENT_FIELD_FOCUS_ORDER: (keyof TournamentNewFormControls)[] = [
   styleUrl: './tournament-new.page.css',
 })
 export class TournamentNewPage {
-  private readonly tournamentsApi = inject(TournamentsApi);
+  private readonly store = inject(Store);
+  private readonly actions$ = inject(Actions);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly injector = inject(Injector);
@@ -64,6 +66,25 @@ export class TournamentNewPage {
 
   constructor() {
     this.tournamentForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.error.set(null));
+
+    this.actions$
+      .pipe(ofType(TournamentActions.addTournamentSuccess), takeUntilDestroyed())
+      .subscribe(async () => {
+        this.submitting.set(false);
+        this.notificationService.showSuccess('Tournament created successfully.');
+        this.store.dispatch(TournamentActions.clearTournamentFeedback());
+        await this.router.navigate(['/tournaments']);
+      });
+
+    this.actions$
+      .pipe(ofType(TournamentActions.addTournamentFailure), takeUntilDestroyed())
+      .subscribe(({ error }) => {
+        this.submitting.set(false);
+        const errorMessage = error || 'Could not create tournament. Make sure you are logged in.';
+        this.error.set(errorMessage);
+        this.notificationService.showError(errorMessage);
+        this.scrollCreateErrorIntoView();
+      });
   }
 
   submit(): void {
@@ -78,29 +99,8 @@ export class TournamentNewPage {
     const payload = this.buildCreatePayload(raw);
 
     this.submitting.set(true);
-
-    this.tournamentsApi
-      .create(payload)
-      .pipe(finalize(() => this.submitting.set(false)))
-      .subscribe({
-        next: async () => {
-          this.notificationService.showSuccess('Tournament created successfully.');
-          await this.router.navigateByUrl('/tournaments');
-        },
-        error: (e: unknown) => {
-          const err = e as { error?: { message?: unknown }; message?: unknown };
-          const msg =
-            typeof err?.error?.message === 'string'
-              ? err.error.message
-              : typeof err?.message === 'string'
-                ? err.message
-                : null;
-          const errorMessage = msg || 'Could not create tournament. Make sure you are logged in.';
-          this.error.set(errorMessage);
-          this.notificationService.showError(errorMessage);
-          this.scrollCreateErrorIntoView();
-        },
-      });
+    this.store.dispatch(TournamentActions.clearTournamentFeedback());
+    this.store.dispatch(TournamentActions.addTournament({ payload }));
   }
 
   private buildCreatePayload(

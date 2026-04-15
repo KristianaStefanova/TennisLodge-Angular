@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { User } from '../../shared/interfaces/user';
+import { User } from '../../shared/interfaces/user.interface';
 import {
   LoginCredentials,
   RegisterPayload,

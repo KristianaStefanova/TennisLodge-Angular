@@ -3,7 +3,7 @@ import { RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TournamentsApi } from '../../../../core/services/tournaments.service';
-import { Tournament } from '../../../../shared/interfaces/tournament';
+import { Tournament } from '../../../../shared/interfaces/tournament.interface';
 
 export const tournamentDetailResolver: ResolveFn<Tournament> = (route) => {
   const api = inject(TournamentsApi);

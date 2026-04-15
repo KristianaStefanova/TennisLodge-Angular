@@ -1,0 +1,5 @@
+# Root of repo: avoid committing accidental npm installs here.
+# The Angular app uses Frontend/package.json.
+node_modules/
+/package.json
+/package-lock.json

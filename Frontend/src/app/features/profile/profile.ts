@@ -20,7 +20,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { UserService } from '../../core/services/user.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
 import { InputErrorDirective } from '../../shared/directives/input-error.directive';
-import type { User } from '../../shared/interfaces/user';
+import type { User } from '../../shared/interfaces/user.interface';
 import type { UserProfileUpdate } from '../../shared/interfaces/user.dto';
 import { validationKeys } from '../../shared/validators/validation-keys';
 import { createProfileForm } from './profile-form';

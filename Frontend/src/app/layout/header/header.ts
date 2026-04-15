@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
-import type { User } from '../../shared/interfaces/user';
+import type { User } from '../../shared/interfaces/user.interface';
 import { NotificationService } from '../../core/services/notification.service';
 
 function initialsFromUser(u: User | null | undefined): string {

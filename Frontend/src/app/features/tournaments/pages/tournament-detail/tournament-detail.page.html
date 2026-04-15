@@ -38,6 +38,8 @@
               <time [attr.datetime]="t.tournamentStartDate.toISOString()">
                 {{ t.tournamentStartDate | date: 'longDate' }}
               </time>
+              <span class="tdetail__dash">·</span>
+              <span class="tdetail__countdown">{{ t.tournamentStartDate | daysUntil: daysUntilRefresh.tick() }}</span>
               <span class="tdetail__dash">–</span>
               <time [attr.datetime]="t.tournamentEndDate.toISOString()">
                 {{ t.tournamentEndDate | date: 'longDate' }}
