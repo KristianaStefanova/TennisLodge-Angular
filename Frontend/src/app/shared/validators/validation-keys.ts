@@ -1,6 +1,9 @@
 export const validationKeys = {
   invalidEmail: 'invalidEmail',
   invalidDate: 'invalidDate',
+  invalidDateRange: 'invalidDateRange',
+  transportTypesRequired: 'transportTypesRequired',
+  invalidDistance: 'invalidDistance',
   passwordStrength: 'passwordStrength',
   usernameLetters: 'usernameLetters',
   passwordsMismatch: 'passwordsMismatch',

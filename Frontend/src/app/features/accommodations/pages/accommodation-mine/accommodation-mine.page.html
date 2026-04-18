@@ -1,0 +1,66 @@
+<section class="amine" aria-labelledby="amine-title">
+  <div class="container amine__inner">
+    <header class="amine__header">
+      <div>
+        <p class="amine__kicker">Hosting</p>
+        <h1 id="amine-title" class="amine__title">My accommodations</h1>
+        <p class="amine__lead">
+          Listings you have published. Edit details or remove a stay from the catalog.
+        </p>
+      </div>
+      <div class="amine__actions">
+        <a routerLink="/accommodations/new" class="amine__cta">New listing</a>
+        <a routerLink="/accommodations" class="amine__cta amine__cta--ghost">Browse all</a>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="amine__state" role="status">
+        <span class="amine__spinner" aria-hidden="true"></span>
+        Loading your listings…
+      </div>
+    } @else if (error()) {
+      <div class="amine__alert" role="alert">{{ error() }}</div>
+      <button type="button" class="amine__btn" (click)="reload()">Try again</button>
+    } @else if (rows().length === 0) {
+      <div class="amine__empty">
+        <h2 class="amine__empty-title">No listings yet</h2>
+        <p class="amine__empty-text">Create a stay to host players near tournaments.</p>
+        <a routerLink="/accommodations/new" class="amine__cta">Publish a stay</a>
+      </div>
+    } @else {
+      <ul class="amine__list">
+        @for (a of rows(); track a._id) {
+          <li class="amine__row">
+            <div class="amine__row-main">
+              <p class="amine__address">{{ a.address }}</p>
+              <p class="amine__meta">
+                {{ a.city }} · {{ a.postalCode }} · {{ a.checkInAt | date: 'short' }} –
+                {{ a.checkOutAt | date: 'short' }} · up to {{ a.maxGuests }} guest(s)
+              </p>
+              @if (a.tournament; as tour) {
+                <p class="amine__tournament">{{ tour.tournamentName }}</p>
+              }
+            </div>
+            <div class="amine__row-actions">
+              <a [routerLink]="['/accommodations', a._id]" class="amine__link">View</a>
+              <a [routerLink]="['/accommodations', a._id, 'edit']" class="amine__link">Edit</a>
+              <button
+                type="button"
+                class="amine__danger"
+                [disabled]="actionId() === a._id"
+                (click)="confirmDelete(a)"
+              >
+                @if (actionId() === a._id) {
+                  Removing…
+                } @else {
+                  Delete
+                }
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

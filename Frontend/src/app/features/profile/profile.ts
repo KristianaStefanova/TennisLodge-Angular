@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
+import { AccommodationsApi } from '../../core/services/accommodations.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserService } from '../../core/services/user.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
@@ -39,6 +40,7 @@ const PROFILE_FIELD_FOCUS_ORDER: (keyof ProfileFormControls)[] = ['username', 'e
 })
 export class Profile implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly accommodationsApi = inject(AccommodationsApi);
   private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly pageTitle = inject(Title);
@@ -88,6 +90,8 @@ export class Profile implements OnInit {
 
   readonly avatarBroken = signal(false);
 
+  readonly hostListingCount = signal<number | null>(null);
+
   constructor() {
     effect(() => {
       const u = this.user();
@@ -104,6 +108,10 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.pageTitle.setTitle('Profile — Tennis Lodge');
+    this.accommodationsApi.getMine().subscribe({
+      next: (rows) => this.hostListingCount.set(rows.length),
+      error: () => this.hostListingCount.set(null),
+    });
   }
 
   pictureSrc(url: string | undefined): string | null {
@@ -124,6 +132,10 @@ export class Profile implements OnInit {
             this.patchProfileFormFromUser(u);
             this.profileForm.markAsPristine();
             this.profileForm.markAsUntouched();
+            this.accommodationsApi.getMine().subscribe({
+              next: (rows) => this.hostListingCount.set(rows.length),
+              error: () => this.hostListingCount.set(null),
+            });
           } else {
             this.loadError.set(
               'We could not load your profile. Check your connection or sign in again.',

@@ -5,7 +5,6 @@ import { passwordsMatchValidator } from '../../../shared/validators/passwords-ma
 import { passwordStrengthValidator } from '../../../shared/validators/password-strength.validator';
 import { usernameLettersValidator } from '../../../shared/validators/username.validator';
 
-/** Builds the register reactive form (validators and structure live here for tests/reuse). */
 export function createRegisterForm(): FormGroup<RegisterFormControls> {
   return new FormGroup<RegisterFormControls>(
     {

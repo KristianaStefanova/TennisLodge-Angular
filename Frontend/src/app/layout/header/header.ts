@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  HostListener,
+  inject,
+  signal,
+  viewChild,
+  ElementRef,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
@@ -31,6 +40,9 @@ export class Header {
 
   private readonly headerAvatarBroken = signal(false);
 
+  readonly accountMenuOpen = signal(false);
+  private readonly accountDropdown = viewChild<ElementRef<HTMLElement>>('accountDropdown');
+
   readonly headerAvatarSrc = computed(() => {
     if (this.headerAvatarBroken()) {
       return null;
@@ -59,6 +71,39 @@ export class Header {
         void this.router.navigateByUrl('/');
       },
     });
+  }
+
+  toggleAccountMenu(event: Event): void {
+    event.stopPropagation();
+    this.accountMenuOpen.update((open) => !open);
+  }
+
+  closeAccountMenu(): void {
+    this.accountMenuOpen.set(false);
+  }
+
+  logoutFromMenu(): void {
+    this.closeAccountMenu();
+    this.logout();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.accountMenuOpen()) {
+      return;
+    }
+    const root = this.accountDropdown()?.nativeElement;
+    if (root?.contains(event.target as Node)) {
+      return;
+    }
+    this.accountMenuOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeCloseAccountMenu(): void {
+    if (this.accountMenuOpen()) {
+      this.accountMenuOpen.set(false);
+    }
   }
 
   onHeaderAvatarError(): void {

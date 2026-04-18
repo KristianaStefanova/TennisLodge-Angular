@@ -1,0 +1,302 @@
+<div class="container page">
+  <div class="header">
+    <h1 #pageHeading class="title">Edit accommodation</h1>
+    <p class="subtitle">Update your listing. Changes apply immediately for logged-in users.</p>
+  </div>
+
+  @if (error()) {
+    <div #saveErrorAlert class="alert" role="alert" tabindex="-1" aria-live="polite">
+      {{ error() }}
+    </div>
+  }
+
+  <p class="form-legend" id="acc-edit-form-legend">
+    <span class="req" aria-hidden="true">*</span> Required fields
+  </p>
+
+  <form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate aria-describedby="acc-edit-form-legend">
+    <h2 class="section-title">Stay</h2>
+    <div class="grid">
+      <label
+        class="field"
+        [class.field--invalid]="form.get('checkInAt')?.touched && form.get('checkInAt')?.invalid"
+        for="acc-edit-input-checkInAt"
+      >
+        <span class="label"
+          >Check-in (date &amp; time) <span class="req" aria-hidden="true">*</span></span
+        >
+        <input
+          id="acc-edit-input-checkInAt"
+          class="control"
+          type="datetime-local"
+          formControlName="checkInAt"
+          appInputError
+          required
+          aria-required="true"
+        />
+        @if (form.get('checkInAt')?.touched && form.get('checkInAt')?.invalid) {
+          <span class="field-error" role="alert">Required.</span>
+        }
+      </label>
+
+      <label
+        class="field"
+        [class.field--invalid]="
+          (form.get('checkOutAt')?.touched && form.get('checkOutAt')?.invalid) ||
+          (form.touched && form.hasError(validationKeys.invalidDateRange))
+        "
+        for="acc-edit-input-checkOutAt"
+      >
+        <span class="label"
+          >Check-out (date &amp; time) <span class="req" aria-hidden="true">*</span></span
+        >
+        <input
+          id="acc-edit-input-checkOutAt"
+          class="control"
+          type="datetime-local"
+          formControlName="checkOutAt"
+          appInputError
+          required
+          aria-required="true"
+        />
+        @if (form.get('checkOutAt')?.touched && form.get('checkOutAt')?.invalid) {
+          <span class="field-error" role="alert">Required.</span>
+        }
+        @if (form.touched && form.hasError(validationKeys.invalidDateRange)) {
+          <span class="field-error" role="alert">Check-out must be after check-in.</span>
+        }
+      </label>
+
+      <label
+        class="field"
+        [class.field--invalid]="form.get('address')?.touched && form.get('address')?.invalid"
+        for="acc-edit-input-address"
+      >
+        <span class="label">Street address <span class="req" aria-hidden="true">*</span></span>
+        <input
+          id="acc-edit-input-address"
+          class="control"
+          type="text"
+          formControlName="address"
+          appInputError
+          autocomplete="street-address"
+          required
+          aria-required="true"
+        />
+        @if (form.get('address')?.touched && form.get('address')?.invalid) {
+          <span class="field-error" role="alert">Required.</span>
+        }
+      </label>
+
+      <label
+        class="field"
+        [class.field--invalid]="form.get('city')?.touched && form.get('city')?.invalid"
+        for="acc-edit-input-city"
+      >
+        <span class="label">City or town <span class="req" aria-hidden="true">*</span></span>
+        <input
+          id="acc-edit-input-city"
+          class="control"
+          type="text"
+          formControlName="city"
+          appInputError
+          autocomplete="address-level2"
+          required
+          aria-required="true"
+        />
+        @if (form.get('city')?.touched && form.get('city')?.invalid) {
+          <span class="field-error" role="alert">Required.</span>
+        }
+      </label>
+
+      <label
+        class="field"
+        [class.field--invalid]="form.get('postalCode')?.touched && form.get('postalCode')?.invalid"
+        for="acc-edit-input-postalCode"
+      >
+        <span class="label">Postal code <span class="req" aria-hidden="true">*</span></span>
+        <input
+          id="acc-edit-input-postalCode"
+          class="control"
+          type="text"
+          formControlName="postalCode"
+          appInputError
+          autocomplete="postal-code"
+          required
+          aria-required="true"
+        />
+        @if (form.get('postalCode')?.touched && form.get('postalCode')?.invalid) {
+          <span class="field-error" role="alert">Required.</span>
+        }
+      </label>
+
+      <label
+        class="field"
+        [class.field--invalid]="form.get('maxGuests')?.touched && form.get('maxGuests')?.invalid"
+        for="acc-edit-input-maxGuests"
+      >
+        <span class="label">Max guests <span class="req" aria-hidden="true">*</span></span>
+        <input
+          id="acc-edit-input-maxGuests"
+          class="control"
+          type="number"
+          min="1"
+          max="500"
+          formControlName="maxGuests"
+          appInputError
+          required
+          aria-required="true"
+        />
+        @if (form.get('maxGuests')?.touched && form.get('maxGuests')?.invalid) {
+          <span class="field-error" role="alert">Enter a number between 1 and 500.</span>
+        }
+      </label>
+
+      <div
+        class="field field--distance"
+        [class.field--invalid]="
+          (form.get('distanceAmount')?.touched && form.get('distanceAmount')?.invalid) ||
+          (form.touched && form.hasError(validationKeys.invalidDistance))
+        "
+      >
+        <span class="label" id="acc-edit-label-distance"
+          >Distance to courts <span class="req" aria-hidden="true">*</span></span
+        >
+        <p class="field-hint" id="acc-edit-hint-distance">Use meters for short walks or kilometers for longer trips.</p>
+        <div
+          class="distance-row"
+          role="group"
+          aria-labelledby="acc-edit-label-distance"
+          aria-describedby="acc-edit-hint-distance"
+        >
+          <input
+            id="acc-edit-input-distanceAmount"
+            class="control distance-row__amount"
+            type="number"
+            min="0"
+            step="any"
+            formControlName="distanceAmount"
+            appInputError
+            required
+            aria-required="true"
+          />
+          <select
+            id="acc-edit-input-distanceUnit"
+            class="control distance-row__unit"
+            formControlName="distanceUnit"
+            aria-label="Unit for distance to courts"
+          >
+            <option value="m">Meters (m)</option>
+            <option value="km">Kilometers (km)</option>
+          </select>
+        </div>
+        @if (form.get('distanceAmount')?.touched && form.get('distanceAmount')?.invalid) {
+          <span class="field-error" role="alert">Enter a valid distance (0 or more).</span>
+        }
+        @if (form.touched && form.hasError(validationKeys.invalidDistance)) {
+          <span class="field-error" role="alert">Enter a valid distance.</span>
+        }
+      </div>
+
+      <fieldset class="field field--fieldset">
+        <legend class="label">Public transport near the home?</legend>
+        <div class="radio-row" role="radiogroup" aria-label="Public transport near the home">
+          <label class="radio-pill">
+            <input type="radio" formControlName="hasPublicTransportNearby" [value]="false" />
+            No
+          </label>
+          <label class="radio-pill">
+            <input type="radio" formControlName="hasPublicTransportNearby" [value]="true" />
+            Yes
+          </label>
+        </div>
+      </fieldset>
+
+      @if (form.controls.hasPublicTransportNearby.value) {
+        <fieldset
+          class="field field--fieldset field--block"
+          id="acc-edit-fieldset-public-transport-types"
+          tabindex="-1"
+          [class.field--invalid]="
+            form.touched && form.hasError(validationKeys.transportTypesRequired)
+          "
+        >
+          <legend class="label"
+            >Which options are nearby? <span class="req" aria-hidden="true">*</span></legend
+          >
+          <p class="field-hint">Select all that apply (you can choose more than one).</p>
+          <div class="transport-grid" role="group" aria-label="Types of public transport nearby">
+            @for (opt of transportOptions; track opt.id) {
+              <label class="transport-option">
+                <input
+                  type="checkbox"
+                  [checked]="isTransportSelected(opt.id)"
+                  (change)="onTransportToggle(opt.id, $any($event.target).checked)"
+                />
+                <span>{{ opt.label }}</span>
+              </label>
+            }
+          </div>
+          @if (form.touched && form.hasError(validationKeys.transportTypesRequired)) {
+            <span class="field-error" role="alert">Select at least one option, or choose No above.</span>
+          }
+        </fieldset>
+      }
+    </div>
+
+    <h2 class="section-title">Details</h2>
+    <div class="grid grid--full">
+      <label class="field field--block" for="acc-edit-input-additionalDescription">
+        <span class="label">Additional description</span>
+        <textarea
+          id="acc-edit-input-additionalDescription"
+          class="control control--textarea"
+          rows="4"
+          formControlName="additionalDescription"
+        ></textarea>
+      </label>
+
+      <label class="field field--block" for="acc-edit-input-houseRules">
+        <span class="label">House rules</span>
+        <textarea
+          id="acc-edit-input-houseRules"
+          class="control control--textarea"
+          rows="4"
+          formControlName="houseRules"
+        ></textarea>
+      </label>
+
+      <label class="field" for="acc-edit-input-tournamentId">
+        <span class="label">Associated tournament (optional)</span>
+        <select id="acc-edit-input-tournamentId" class="control" formControlName="tournamentId">
+          <option value="">None</option>
+          @for (t of tournaments(); track t._id) {
+            <option [value]="t._id">{{ t.tournamentName }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field" for="acc-edit-input-photoUrl">
+        <span class="label">Photo URL (optional)</span>
+        <input
+          id="acc-edit-input-photoUrl"
+          class="control"
+          type="url"
+          formControlName="photoUrl"
+          placeholder="https://"
+        />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn primary" [disabled]="submitting()">
+        @if (submitting()) {
+          Saving…
+        } @else {
+          Save changes
+        }
+      </button>
+      <a routerLink="/accommodations/mine" class="btn ghost">Cancel</a>
+    </div>
+  </form>
+</div>

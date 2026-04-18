@@ -1,0 +1,180 @@
+<section class="adetail" aria-label="Accommodation details">
+  <div class="container adetail__inner">
+    <nav class="adetail__crumb" aria-label="Breadcrumb">
+      <a routerLink="/" class="adetail__crumb-link">Home</a>
+      <span class="adetail__crumb-sep" aria-hidden="true">/</span>
+      <a routerLink="/accommodations" class="adetail__crumb-link">Accommodation</a>
+      @if (accommodation(); as a) {
+        <span class="adetail__crumb-sep" aria-hidden="true">/</span>
+        <span class="adetail__crumb-current">{{ a.address }}</span>
+      }
+    </nav>
+
+    @if (loading()) {
+      <div class="adetail__state" role="status">
+        <span class="adetail__spinner" aria-hidden="true"></span>
+        Loading…
+      </div>
+    } @else if (accommodation(); as a) {
+      <article class="adetail__article">
+        <header class="adetail__hero">
+          @if (a.photoUrl) {
+            <div class="adetail__media">
+              <img
+                [src]="a.photoUrl"
+                [alt]="'Photo for ' + a.address"
+                class="adetail__img"
+                width="960"
+                height="540"
+              />
+            </div>
+          }
+          <div class="adetail__hero-text">
+            <p class="adetail__badge">
+              Up to {{ a.maxGuests }} guest(s) · {{ distanceLabel(a.distanceToCourtsMeters) }}
+            </p>
+            <h1 class="adetail__title">{{ a.address }}</h1>
+            <p class="adetail__dates">
+              <time [attr.datetime]="a.checkInAt.toISOString()">{{ a.checkInAt | date: 'medium' }}</time>
+              <span class="adetail__dash">–</span>
+              <time [attr.datetime]="a.checkOutAt.toISOString()">{{ a.checkOutAt | date: 'medium' }}</time>
+            </p>
+            @if (a.tournament) {
+              <p class="adetail__tournament">Tournament: {{ a.tournament.tournamentName }}</p>
+            }
+            @if (isOwner()) {
+              <div class="adetail__owner-actions">
+                <a [routerLink]="['/accommodations', a._id, 'edit']" class="adetail__btn adetail__btn--primary"
+                  >Edit listing</a
+                >
+                <a routerLink="/accommodations/mine" class="adetail__owner-link">Manage all my stays</a>
+              </div>
+            }
+          </div>
+        </header>
+
+        <div class="adetail__grid">
+          <section class="adetail__panel" aria-labelledby="adetail-location">
+            <h2 id="adetail-location" class="adetail__h2">Location &amp; access</h2>
+            <p class="adetail__p">
+              <strong>{{ a.city }}</strong>
+              · {{ a.postalCode }}
+            </p>
+            <p class="adetail__p">{{ publicTransportLine(a.hasPublicTransportNearby, a.publicTransportTypes) }}</p>
+          </section>
+
+          <section class="adetail__panel" aria-labelledby="adetail-desc">
+            <h2 id="adetail-desc" class="adetail__h2">Description</h2>
+            @if (a.additionalDescription) {
+              <p class="adetail__p">{{ a.additionalDescription }}</p>
+            } @else {
+              <p class="adetail__muted">No additional description.</p>
+            }
+          </section>
+
+          <section class="adetail__panel" aria-labelledby="adetail-rules">
+            <h2 id="adetail-rules" class="adetail__h2">House rules</h2>
+            @if (a.houseRules) {
+              <p class="adetail__p adetail__pre">{{ a.houseRules }}</p>
+            } @else {
+              <p class="adetail__muted">No house rules listed.</p>
+            }
+          </section>
+        </div>
+
+        @if (isOwner()) {
+          <section class="adetail__panel adetail__panel--wide" aria-labelledby="adetail-req-host">
+            <h2 id="adetail-req-host" class="adetail__h2">Stay requests</h2>
+            @if (hostRequests().length === 0) {
+              <p class="adetail__muted">No requests yet.</p>
+            } @else {
+              <ul class="adetail__req-list">
+                @for (r of hostRequests(); track r._id) {
+                  <li class="adetail__req-item">
+                    <div class="adetail__req-main">
+                      <strong>{{ requesterLabel(r) }}</strong>
+                      <span class="adetail__req-meta"
+                        >{{ r.numberOfGuests }} guest(s) · {{ r.status }}</span
+                      >
+                    </div>
+                    @if (r.status === 'pending') {
+                      <div class="adetail__req-actions">
+                        <button
+                          type="button"
+                          class="adetail__btn adetail__btn--primary"
+                          [disabled]="requestBusy()"
+                          (click)="setRequestStatus(r._id, 'accepted')"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          type="button"
+                          class="adetail__btn"
+                          [disabled]="requestBusy()"
+                          (click)="setRequestStatus(r._id, 'rejected')"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        } @else {
+          <section class="adetail__panel adetail__panel--wide" aria-labelledby="adetail-req-guest">
+            <h2 id="adetail-req-guest" class="adetail__h2">Request a stay</h2>
+            @if (guestRequest(); as g) {
+              <p class="adetail__p">
+                Your request: <strong>{{ g.numberOfGuests }}</strong> guest(s) —
+                <strong>{{ g.status }}</strong>
+              </p>
+              @if (g.status === 'pending') {
+                <button
+                  type="button"
+                  class="adetail__btn"
+                  [disabled]="requestBusy()"
+                  (click)="cancelMyRequest(g._id)"
+                >
+                  Cancel request
+                </button>
+              }
+            }
+
+            @if (
+              !guestRequest() ||
+              guestRequest()!.status === 'rejected' ||
+              guestRequest()!.status === 'cancelled'
+            ) {
+              <form
+                class="adetail__req-form"
+                [formGroup]="requestForm"
+                (ngSubmit)="submitRequest(a._id, a.maxGuests)"
+              >
+                <label class="adetail__field" for="guest-count">
+                  <span class="adetail__label">Number of guests (max {{ a.maxGuests }})</span>
+                  <input
+                    id="guest-count"
+                    class="adetail__input"
+                    type="number"
+                    min="1"
+                    [max]="a.maxGuests"
+                    formControlName="numberOfGuests"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  class="adetail__btn adetail__btn--primary"
+                  [disabled]="requestBusy() || requestForm.invalid"
+                >
+                  Send request
+                </button>
+              </form>
+            }
+          </section>
+        }
+      </article>
+    }
+  </div>
+</section>

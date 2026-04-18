@@ -3,6 +3,8 @@ const tokenBlacklistModel = require('./tokenBlacklistModel');
 const themeModel = require('./themeModel');
 const postModel = require('./postModel');
 const tournamentModel = require('./tournamentModel');
+const accommodationModel = require('./accommodationModel');
+const accommodationRequestModel = require('./accommodationRequestModel');
 
 module.exports = {
     userModel,
@@ -10,4 +12,6 @@ module.exports = {
     themeModel,
     postModel,
     tournamentModel,
+    accommodationModel,
+    accommodationRequestModel,
 }

@@ -13,6 +13,11 @@ import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { errorInterceptor } from './core/interceptors/error-interceptor';
 import { TournamentEffects } from './store/tournaments/tournament.effects';
 import { tournamentFeatureKey, tournamentReducer } from './store/tournaments/tournament.reducer';
+import { AccommodationEffects } from './store/accommodations/accommodation.effects';
+import {
+  accommodationFeatureKey,
+  accommodationReducer,
+} from './store/accommodations/accommodation.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +29,8 @@ export const appConfig: ApplicationConfig = {
     ),
     provideStore({
       [tournamentFeatureKey]: tournamentReducer,
+      [accommodationFeatureKey]: accommodationReducer,
     }),
-    provideEffects([TournamentEffects]),
+    provideEffects([TournamentEffects, AccommodationEffects]),
   ],
 };

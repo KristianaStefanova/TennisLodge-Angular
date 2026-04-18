@@ -1,0 +1,199 @@
+.amine {
+  padding: var(--space-10) 0 var(--space-16);
+}
+
+.amine__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.amine__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.amine__kicker {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-brand-700);
+}
+
+.amine__title {
+  margin: 0 0 var(--space-3);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  line-height: 1.15;
+  color: var(--color-text);
+}
+
+.amine__lead {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.amine__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.amine__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-brand-700), var(--color-brand-800));
+  box-shadow: var(--shadow-md);
+}
+
+.amine__cta--ghost {
+  background: var(--color-surface-elevated);
+  color: var(--color-brand-800);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.amine__state {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8);
+  color: var(--color-text-muted);
+}
+
+.amine__spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-brand-700);
+  border-radius: 50%;
+  animation: amine-spin 0.7s linear infinite;
+}
+
+@keyframes amine-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.amine__alert {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, #b91c1c 35%, transparent);
+  background: color-mix(in srgb, #b91c1c 8%, transparent);
+}
+
+.amine__btn {
+  align-self: flex-start;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.amine__empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  background: var(--color-surface-elevated);
+}
+
+.amine__empty-title {
+  margin: 0 0 var(--space-3);
+  font-size: 1.25rem;
+}
+
+.amine__empty-text {
+  margin: 0 auto var(--space-6);
+  max-width: 28rem;
+  color: var(--color-text-muted);
+}
+
+.amine__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.amine__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.amine__address {
+  margin: 0 0 var(--space-2);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.amine__meta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.amine__tournament {
+  margin: var(--space-2) 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-brand-700);
+}
+
+.amine__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.amine__link {
+  font-weight: 600;
+  color: var(--color-brand-700);
+  text-decoration: none;
+}
+
+.amine__link:hover {
+  text-decoration: underline;
+}
+
+.amine__danger {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--color-danger, #e11d48) 45%, transparent);
+  background: color-mix(in srgb, var(--color-danger, #e11d48) 8%, transparent);
+  color: var(--color-danger, #b91c1c);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.amine__danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

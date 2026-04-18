@@ -1,5 +1,7 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { AuthService } from './core/services/auth.service';
 import { Header } from './layout/header/header';
 import { Footer } from './layout/footer/footer';
@@ -12,6 +14,16 @@ import { Footer } from './layout/footer/footer';
 })
 export class App implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly viewportScroller = inject(ViewportScroller);
+
+  constructor() {
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(() => {
+        requestAnimationFrame(() => this.viewportScroller.scrollToPosition([0, 0]));
+      });
+  }
 
   ngOnInit(): void {
     this.auth.loadCurrentUser().subscribe();

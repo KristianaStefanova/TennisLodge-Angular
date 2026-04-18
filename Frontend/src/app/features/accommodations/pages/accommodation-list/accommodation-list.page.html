@@ -1,0 +1,52 @@
+<section class="alist" aria-labelledby="alist-title">
+  <div class="container alist__inner">
+    <header class="alist__header">
+      <div>
+        <p class="alist__kicker">Stays</p>
+        <h1 id="alist-title" class="alist__title">Accommodation</h1>
+        <p class="alist__lead">
+          Browse places offered by hosts. Sign in is required to view listings.
+        </p>
+      </div>
+      <div class="alist__header-actions">
+        <a routerLink="/accommodations/mine" class="alist__cta alist__cta--ghost">My listings</a>
+        <a routerLink="/accommodations/new" class="alist__cta">Offer a stay</a>
+      </div>
+    </header>
+
+    @if (loading$ | async) {
+      <div class="alist__state" role="status" aria-live="polite">
+        <span class="alist__spinner" aria-hidden="true"></span>
+        Loading accommodations…
+      </div>
+    } @else if (error$ | async; as error) {
+      <div class="alist__alert" role="alert">
+        {{ error }}
+      </div>
+    } @else if (accommodations$ | async; as accommodations) {
+      @if (accommodations.length === 0) {
+        <div class="alist__empty">
+          <h2 class="alist__empty-title">No stays yet</h2>
+          <p class="alist__empty-text">
+            When hosts publish stays, they will appear here. Create one if you would like to host.
+          </p>
+          <a routerLink="/accommodations/new" class="alist__cta alist__cta--ghost">Publish the first stay</a>
+        </div>
+      } @else {
+        <ul class="alist__grid">
+          @for (a of accommodations; track a._id) {
+            <li class="alist__cell">
+              <app-accommodation-item [accommodation]="a"></app-accommodation-item>
+            </li>
+          }
+        </ul>
+      }
+    } @else {
+      <div class="alist__empty">
+        <h2 class="alist__empty-title">No stays yet</h2>
+        <p class="alist__empty-text">Nothing to show.</p>
+        <a routerLink="/accommodations/new" class="alist__cta alist__cta--ghost">Publish a stay</a>
+      </div>
+    }
+  </div>
+</section>

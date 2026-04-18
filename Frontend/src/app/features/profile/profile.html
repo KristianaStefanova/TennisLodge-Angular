@@ -258,6 +258,20 @@
               </div>
             </div>
           </div>
+
+          <section class="profile__hosting" aria-labelledby="profile-hosting-title">
+            <h2 id="profile-hosting-title" class="profile__panel-title">Hosting</h2>
+            <p class="profile__panel-desc">
+              Stays you publish for players traveling to tournaments. Edit or remove listings from one place.
+            </p>
+            @if (hostListingCount() !== null) {
+              <p class="profile__hosting-meta">
+                <span class="profile__hosting-count">{{ hostListingCount() }}</span>
+                active listing(s)
+              </p>
+            }
+            <a routerLink="/accommodations/mine" class="profile__hosting-cta">Manage my accommodations</a>
+          </section>
         </div>
       } @else {
         <p class="profile__empty-state">No profile data loaded.</p>

@@ -1,0 +1,36 @@
+<article class="acard">
+  <a [routerLink]="['/accommodations', accommodation()._id]" class="acard__link">
+    <div class="acard__media">
+      @if (accommodation().photoUrl) {
+        <img
+          [src]="accommodation().photoUrl"
+          [alt]="'Photo for stay at ' + accommodation().address"
+          class="acard__img"
+          loading="lazy"
+          width="640"
+          height="360"
+        />
+      } @else {
+        <div class="acard__placeholder" aria-hidden="true">
+          <span class="acard__placeholder-text">Stay</span>
+        </div>
+      }
+    </div>
+    <div class="acard__body">
+      <p class="acard__meta">
+        {{ accommodation().checkInAt | date: 'short' }}
+        <span class="acard__sep">–</span>
+        {{ accommodation().checkOutAt | date: 'short' }}
+      </p>
+      <h2 class="acard__name">{{ accommodation().address }}</h2>
+      <p class="acard__loc">
+        {{ accommodation().city }} · {{ accommodation().postalCode }} · Up to {{ accommodation().maxGuests }}
+        guest(s) · {{ distanceLabel(accommodation().distanceToCourtsMeters) }}
+      </p>
+      @if (accommodation().tournament; as tour) {
+        <p class="acard__tournament">{{ tour.tournamentName }}</p>
+      }
+      <span class="acard__more">View details</span>
+    </div>
+  </a>
+</article>

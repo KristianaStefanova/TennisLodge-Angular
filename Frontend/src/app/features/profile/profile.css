@@ -178,6 +178,48 @@
   }
 }
 
+.profile__hosting {
+  grid-column: 1 / -1;
+  margin-top: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-border) 90%, var(--color-brand-700) 10%);
+  background: color-mix(in srgb, var(--color-brand-100) 55%, var(--color-surface-elevated) 45%);
+}
+
+.profile__hosting .profile__panel-title {
+  margin-bottom: var(--space-2);
+}
+
+.profile__hosting-meta {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-muted);
+}
+
+.profile__hosting-count {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.profile__hosting-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-brand-700), var(--color-brand-800));
+  box-shadow: var(--shadow-sm);
+}
+
+.profile__hosting-cta:hover {
+  text-decoration: none;
+  filter: brightness(1.03);
+}
+
 .profile__identity {
   text-align: center;
 }

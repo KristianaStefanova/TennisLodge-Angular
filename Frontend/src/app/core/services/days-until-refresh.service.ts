@@ -4,7 +4,6 @@ import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DAYS_UNTIL_REFRESH_MS } from '../../shared/pipes/days-until.pipe';
 
-/** Shared interval tick so the pure `daysUntil` pipe can refresh without prop drilling. */
 @Injectable({
   providedIn: 'root',
 })

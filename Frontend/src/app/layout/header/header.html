@@ -16,34 +16,79 @@
       <ul>
         @if (auth.isAuthenticated()) {
           <li class="mini-navbar__user-wrap">
-            <a
-              routerLink="/profile"
-              class="mini-navbar__user mini-navbar__user--link"
-              aria-live="polite"
-            >
-              <span class="mini-navbar__user-inner">
-                @if (headerAvatarSrc(); as src) {
-                  <img
-                    class="mini-navbar__avatar"
-                    [src]="src"
-                    alt=""
-                    width="44"
-                    height="44"
-                    (error)="onHeaderAvatarError()"
-                  />
-                } @else {
-                  <span class="mini-navbar__avatar mini-navbar__avatar--fallback" aria-hidden="true">{{
-                    headerUserInitials()
-                  }}</span>
-                }
-                <span class="mini-navbar__user-name">{{ auth.user()?.username }}</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <button type="button" class="mini-navbar__link mini-navbar__link--ghost mini-navbar__btn" (click)="logout()">
-              Log out
-            </button>
+            <div class="account-dropdown" #accountDropdown>
+              <button
+                type="button"
+                class="account-dropdown__trigger"
+                id="account-dropdown-button"
+                [attr.aria-expanded]="accountMenuOpen()"
+                aria-haspopup="true"
+                aria-controls="account-dropdown-panel"
+                (click)="toggleAccountMenu($event)"
+              >
+                <span class="mini-navbar__user-inner">
+                  @if (headerAvatarSrc(); as src) {
+                    <img
+                      class="mini-navbar__avatar"
+                      [src]="src"
+                      alt=""
+                      width="44"
+                      height="44"
+                      (error)="onHeaderAvatarError()"
+                    />
+                  } @else {
+                    <span class="mini-navbar__avatar mini-navbar__avatar--fallback" aria-hidden="true">{{
+                      headerUserInitials()
+                    }}</span>
+                  }
+                  <span class="mini-navbar__user-name">{{ auth.user()?.username }}</span>
+                  <span class="account-dropdown__chevron" aria-hidden="true">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M2.5 4.25L6 7.75L9.5 4.25"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </span>
+              </button>
+              <div
+                id="account-dropdown-panel"
+                class="account-dropdown__panel"
+                role="region"
+                aria-labelledby="account-dropdown-button"
+                [hidden]="!accountMenuOpen()"
+              >
+                <ul class="account-dropdown__list" role="list">
+                  <li class="account-dropdown__item">
+                    <a
+                      routerLink="/profile"
+                      routerLinkActive="account-dropdown__link--active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="account-dropdown__link"
+                      (click)="closeAccountMenu()"
+                      >Profile</a>
+                  </li>
+                  <li class="account-dropdown__item">
+                    <a
+                      routerLink="/accommodations/mine"
+                      routerLinkActive="account-dropdown__link--active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="account-dropdown__link"
+                      (click)="closeAccountMenu()"
+                      >Manage my accommodations</a>
+                  </li>
+                  <li class="account-dropdown__item account-dropdown__item--danger">
+                    <button type="button" class="account-dropdown__danger" (click)="logoutFromMenu()">
+                      Log out
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </li>
         } @else {
           <li>
