@@ -22,6 +22,7 @@
                 class="account-dropdown__trigger"
                 id="account-dropdown-button"
                 [attr.aria-expanded]="accountMenuOpen()"
+                [attr.aria-label]="accountTriggerAriaLabel()"
                 aria-haspopup="true"
                 aria-controls="account-dropdown-panel"
                 (click)="toggleAccountMenu($event)"
@@ -42,6 +43,11 @@
                     }}</span>
                   }
                   <span class="mini-navbar__user-name">{{ auth.user()?.username }}</span>
+                  @if (stayCounts.totalPending() > 0) {
+                    <span class="account-dropdown__pill" aria-hidden="true">{{
+                      stayCounts.formatBadge(stayCounts.totalPending())
+                    }}</span>
+                  }
                   <span class="account-dropdown__chevron" aria-hidden="true">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -71,6 +77,46 @@
                       class="account-dropdown__link"
                       (click)="closeAccountMenu()"
                       >Profile</a>
+                  </li>
+                  <li class="account-dropdown__item">
+                    <a
+                      routerLink="/accommodations/sent"
+                      routerLinkActive="account-dropdown__link--active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="account-dropdown__link account-dropdown__link--row"
+                      (click)="closeAccountMenu()"
+                    >
+                      <span>Requests I sent</span>
+                      @if (stayCounts.sentMenuAttention() > 0) {
+                        <span class="account-dropdown__badge" aria-hidden="true">{{
+                          stayCounts.formatBadge(stayCounts.sentMenuAttention())
+                        }}</span>
+                        <span class="account-dropdown__sr-only"
+                          >({{ stayCounts.pendingSent() }} awaiting host, {{ stayCounts.unreadGuestOutcomes() }} new
+                          responses)</span
+                        >
+                      }
+                    </a>
+                  </li>
+                  <li class="account-dropdown__item">
+                    <a
+                      routerLink="/accommodations/incoming"
+                      routerLinkActive="account-dropdown__link--active"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="account-dropdown__link account-dropdown__link--row"
+                      (click)="closeAccountMenu()"
+                    >
+                      <span>Stay requests</span>
+                      @if (stayCounts.pendingReceived() > 0) {
+                        <span class="account-dropdown__badge" aria-hidden="true">{{
+                          stayCounts.formatBadge(stayCounts.pendingReceived())
+                        }}</span>
+                        <span class="account-dropdown__sr-only"
+                          >({{ stayCounts.pendingReceived() }}
+                          pending)</span
+                        >
+                      }
+                    </a>
                   </li>
                   <li class="account-dropdown__item">
                     <a
@@ -127,10 +173,18 @@
   </nav>
 </header>
 
-@if (notification(); as currentNotification) {
-  <div class="notification-toast-wrap" aria-live="assertive" aria-atomic="true">
-    <div class="notification-toast" [class.notification-toast--error]="currentNotification.type === 'error'">
-      {{ currentNotification.message }}
+@if (activeToast(); as toast) {
+  <div
+    class="notification-toast-wrap"
+    [attr.aria-live]="toast.type === 'error' ? 'assertive' : 'polite'"
+    aria-atomic="true"
+  >
+    <div
+      class="notification-toast"
+      [class.notification-toast--error]="toastIsError(toast)"
+      [class.notification-toast--info]="toastIsInfo(toast)"
+    >
+      {{ toast.message }}
     </div>
   </div>
 }

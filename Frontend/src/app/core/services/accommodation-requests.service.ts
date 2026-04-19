@@ -4,8 +4,12 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
   AccommodationRequest,
+  AccommodationRequestListingSummary,
   AccommodationRequestStatus,
   CreateAccommodationRequestPayload,
+  GuestOutgoingStayRequest,
+  StayRequestCountsDto,
+  StayRequestWithListing,
 } from '../../shared/interfaces/accommodation-request.interface';
 
 interface AccommodationRequestApiDto {
@@ -16,6 +20,8 @@ interface AccommodationRequestApiDto {
   status?: unknown;
   createdAt?: unknown;
   updatedAt?: unknown;
+  hostMessage?: unknown;
+  guestOutcomeUnread?: unknown;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -24,11 +30,43 @@ export class AccommodationRequestsApi {
 
   constructor(private readonly http: HttpClient) {}
 
+  getCounts(): Observable<StayRequestCountsDto> {
+    return this.http
+      .get<StayRequestCountsDto>(`${this.baseUrl}/counts`, { withCredentials: true })
+      .pipe(
+        map((body) => ({
+          pendingSent: Math.max(0, Math.floor(Number(body?.pendingSent) || 0)),
+          pendingReceived: Math.max(0, Math.floor(Number(body?.pendingReceived) || 0)),
+          unreadGuestOutcomes: Math.max(0, Math.floor(Number(body?.unreadGuestOutcomes) || 0)),
+        })),
+        catchError((err) => this.handleError(err)),
+      );
+  }
+
   listMine(): Observable<AccommodationRequest[]> {
     return this.http
       .get<AccommodationRequestApiDto[]>(`${this.baseUrl}/mine`, { withCredentials: true })
       .pipe(
         map((rows) => (Array.isArray(rows) ? rows : []).map((r) => this.toRequest(r))),
+        catchError((err) => this.handleError(err)),
+      );
+  }
+
+  listIncomingForHost(): Observable<StayRequestWithListing[]> {
+    return this.http
+      .get<AccommodationRequestApiDto[]>(`${this.baseUrl}/incoming`, { withCredentials: true })
+      .pipe(
+        map((rows) => (Array.isArray(rows) ? rows : []).map((r) => this.toStayRequestWithListing(r))),
+        catchError((err) => this.handleError(err)),
+      );
+  }
+
+  /** Stay requests you sent as a guest (status includes pending / accepted / rejected / cancelled). */
+  listSentByMe(): Observable<GuestOutgoingStayRequest[]> {
+    return this.http
+      .get<AccommodationRequestApiDto[]>(`${this.baseUrl}/mine`, { withCredentials: true })
+      .pipe(
+        map((rows) => (Array.isArray(rows) ? rows : []).map((r) => this.toStayRequestWithListing(r))),
         catchError((err) => this.handleError(err)),
       );
   }
@@ -51,14 +89,77 @@ export class AccommodationRequestsApi {
       .pipe(map((r) => this.toRequest(r)), catchError((err) => this.handleError(err)));
   }
 
-  updateStatus(id: string, status: AccommodationRequestStatus): Observable<AccommodationRequest> {
+  /** Marks all host outcomes as seen for the current guest (clears unread badges). */
+  markGuestOutcomesRead(): Observable<{ modifiedCount: number }> {
+    return this.http
+      .post<{ modifiedCount: number }>(
+        `${this.baseUrl}/guest-outcomes/read`,
+        {},
+        { withCredentials: true },
+      )
+      .pipe(catchError((err) => this.handleError(err)));
+  }
+
+  updateStatus(
+    id: string,
+    status: AccommodationRequestStatus,
+    options?: { hostMessage?: string },
+  ): Observable<AccommodationRequest> {
+    const body: Record<string, unknown> = { status };
+    if (status === 'accepted' || status === 'rejected') {
+      body['message'] = options?.hostMessage ?? '';
+    }
     return this.http
       .patch<AccommodationRequestApiDto>(
         `${this.baseUrl}/${encodeURIComponent(id)}`,
-        { status },
+        body,
         { withCredentials: true },
       )
       .pipe(map((r) => this.toRequest(r)), catchError((err) => this.handleError(err)));
+  }
+
+  private toStayRequestWithListing(row: AccommodationRequestApiDto): StayRequestWithListing {
+    const base = this.toRequest(row);
+    const accRaw = row.accommodationId;
+    const accommodation = this.toListingSummary(accRaw, base.accommodationId);
+    return {
+      ...base,
+      accommodation,
+    };
+  }
+
+  private toListingSummary(
+    accRaw: unknown,
+    fallbackId: string,
+  ): AccommodationRequestListingSummary {
+    if (accRaw && typeof accRaw === 'object' && '_id' in accRaw) {
+      const a = accRaw as {
+        _id?: unknown;
+        address?: unknown;
+        city?: unknown;
+        checkInAt?: unknown;
+        checkOutAt?: unknown;
+        maxGuests?: unknown;
+        isDeleted?: unknown;
+      };
+      return {
+        _id: a._id != null ? String(a._id) : fallbackId,
+        address: typeof a.address === 'string' ? a.address : '',
+        city: typeof a.city === 'string' ? a.city : '',
+        checkInAt: this.parseDate(a.checkInAt),
+        checkOutAt: this.parseDate(a.checkOutAt),
+        maxGuests: typeof a.maxGuests === 'number' ? a.maxGuests : 1,
+        ...(typeof a.isDeleted === 'boolean' ? { isDeleted: a.isDeleted } : {}),
+      };
+    }
+    return {
+      _id: fallbackId,
+      address: '',
+      city: '',
+      checkInAt: new Date(),
+      checkOutAt: new Date(),
+      maxGuests: 1,
+    };
   }
 
   private toRequest(row: AccommodationRequestApiDto): AccommodationRequest {
@@ -78,6 +179,8 @@ export class AccommodationRequestsApi {
       status: (row.status as AccommodationRequestStatus) ?? 'pending',
       createdAt: this.parseDate(row.createdAt),
       updatedAt: this.parseDate(row.updatedAt),
+      hostMessage: typeof row.hostMessage === 'string' ? row.hostMessage : '',
+      guestOutcomeUnread: row.guestOutcomeUnread === true,
     };
   }
 

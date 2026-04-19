@@ -259,6 +259,14 @@
             </div>
           </div>
 
+          <section class="profile__travel" aria-labelledby="profile-travel-title">
+            <h2 id="profile-travel-title" class="profile__panel-title">Travel</h2>
+            <p class="profile__panel-desc">
+              Stays you have asked to book. See when hosts accept or reject, or cancel a pending request.
+            </p>
+            <a routerLink="/accommodations/sent" class="profile__travel-cta">Requests I sent</a>
+          </section>
+
           <section class="profile__hosting" aria-labelledby="profile-hosting-title">
             <h2 id="profile-hosting-title" class="profile__panel-title">Hosting</h2>
             <p class="profile__panel-desc">
@@ -270,7 +278,12 @@
                 active listing(s)
               </p>
             }
-            <a routerLink="/accommodations/mine" class="profile__hosting-cta">Manage my accommodations</a>
+            <div class="profile__hosting-links">
+              <a routerLink="/accommodations/incoming" class="profile__hosting-cta">Stay requests</a>
+              <a routerLink="/accommodations/mine" class="profile__hosting-cta profile__hosting-cta--ghost"
+                >Manage my accommodations</a
+              >
+            </div>
           </section>
         </div>
       } @else {

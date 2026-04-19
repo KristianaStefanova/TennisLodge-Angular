@@ -6,9 +6,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
+import { HostStayDecisionDialogComponent } from '../../components/host-stay-decision-dialog/host-stay-decision-dialog.component';
 import { AccommodationRequestsApi } from '../../../../core/services/accommodation-requests.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { StayRequestCountsService } from '../../../../core/services/stay-request-counts.service';
 import { formatPublicTransportLine } from '../../../../shared/constants/accommodation-public-transport.constants';
 import { Accommodation } from '../../../../shared/interfaces/accommodation.interface';
 import { formatDistanceToCourts } from '../../../../shared/utils/accommodation-distance.util';
@@ -22,7 +24,7 @@ import {
 
 @Component({
   selector: 'app-accommodation-detail-page',
-  imports: [DatePipe, RouterLink, ReactiveFormsModule],
+  imports: [DatePipe, RouterLink, ReactiveFormsModule, HostStayDecisionDialogComponent],
   templateUrl: './accommodation-detail.page.html',
   styleUrl: './accommodation-detail.page.css',
 })
@@ -33,6 +35,7 @@ export class AccommodationDetailPage implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly requestsApi = inject(AccommodationRequestsApi);
   private readonly notification = inject(NotificationService);
+  private readonly stayCounts = inject(StayRequestCountsService);
   private readonly destroyRef = inject(DestroyRef);
   private hasRedirectedForMissing = false;
 
@@ -59,6 +62,11 @@ export class AccommodationDetailPage implements OnInit {
   readonly hostRequests = signal<AccommodationRequest[]>([]);
   readonly guestRequest = signal<AccommodationRequest | null>(null);
   readonly requestBusy = signal(false);
+
+  readonly decisionOpen = signal(false);
+  readonly decisionMode = signal<'accept' | 'reject'>('accept');
+  readonly decisionRow = signal<AccommodationRequest | null>(null);
+  readonly decisionGuestLabel = signal('');
 
   readonly requestForm = new FormGroup({
     numberOfGuests: new FormControl(1, {
@@ -156,6 +164,7 @@ export class AccommodationDetailPage implements OnInit {
       next: (created) => {
         this.requestBusy.set(false);
         this.guestRequest.set(created);
+        this.stayCounts.refresh();
         this.notification.showSuccess('Request sent.');
       },
       error: (e: unknown) => {
@@ -166,12 +175,55 @@ export class AccommodationDetailPage implements OnInit {
     });
   }
 
-  setRequestStatus(requestId: string, status: 'accepted' | 'rejected'): void {
+  openHostDecision(row: AccommodationRequest, mode: 'accept' | 'reject'): void {
+    this.decisionRow.set(row);
+    this.decisionGuestLabel.set(this.requesterLabel(row));
+    this.decisionMode.set(mode);
+    this.decisionOpen.set(true);
+  }
+
+  onHostDecisionConfirm(ev: { message: string }): void {
+    const row = this.decisionRow();
+    if (!row) {
+      return;
+    }
+    const status = this.decisionMode() === 'accept' ? 'accepted' : 'rejected';
+    this.setRequestStatus(row, status, ev.message);
+  }
+
+  onHostDecisionCancel(): void {
+    if (this.requestBusy()) {
+      return;
+    }
+    this.decisionOpen.set(false);
+    this.decisionRow.set(null);
+  }
+
+  setRequestStatus(
+    row: AccommodationRequest,
+    status: 'accepted' | 'rejected',
+    hostMessage: string,
+  ): void {
     this.requestBusy.set(true);
-    this.requestsApi.updateStatus(requestId, status).subscribe({
+    this.requestsApi.updateStatus(row._id, status, { hostMessage }).subscribe({
       next: (updated) => {
         this.requestBusy.set(false);
-        this.hostRequests.update((rows) => rows.map((r) => (r._id === updated._id ? updated : r)));
+        this.decisionOpen.set(false);
+        this.decisionRow.set(null);
+        this.hostRequests.update((rows) =>
+          rows.map((r) =>
+            r._id === updated._id
+              ? {
+                  ...r,
+                  status: updated.status,
+                  updatedAt: updated.updatedAt,
+                  hostMessage: updated.hostMessage,
+                  guestOutcomeUnread: updated.guestOutcomeUnread,
+                }
+              : r,
+          ),
+        );
+        this.stayCounts.refresh();
         this.notification.showSuccess(
           status === 'accepted' ? 'Request accepted.' : 'Request rejected.',
         );
@@ -190,6 +242,7 @@ export class AccommodationDetailPage implements OnInit {
       next: () => {
         this.requestBusy.set(false);
         this.guestRequest.set(null);
+        this.stayCounts.refresh();
         this.notification.showSuccess('Request cancelled.');
       },
       error: (e: unknown) => {

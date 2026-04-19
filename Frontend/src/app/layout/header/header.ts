@@ -12,7 +12,9 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { resolvePublicAssetUrl } from '../../core/utils/public-asset-url';
 import type { User } from '../../shared/interfaces/user.interface';
+import type { ToastNotification } from '../../shared/interfaces/notification.interface';
 import { NotificationService } from '../../core/services/notification.service';
+import { StayRequestCountsService } from '../../core/services/stay-request-counts.service';
 
 function initialsFromUser(u: User | null | undefined): string {
   if (!u) {
@@ -35,6 +37,7 @@ function initialsFromUser(u: User | null | undefined): string {
 })
 export class Header {
   readonly auth = inject(AuthService);
+  readonly stayCounts = inject(StayRequestCountsService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
 
@@ -51,7 +54,18 @@ export class Header {
   });
 
   readonly headerUserInitials = computed(() => initialsFromUser(this.auth.user()));
-  readonly notification = this.notificationService.notification;
+  /** Avoid name `notification` in templates — clashes with the DOM `Notification` type in strict mode. */
+  readonly activeToast = this.notificationService.notification;
+
+  readonly accountTriggerAriaLabel = computed(() => {
+    const u = this.auth.user()?.username?.trim();
+    const name = u ? `@${u}` : 'Account';
+    const t = this.stayCounts.totalPending();
+    if (t <= 0) {
+      return `${name} — open account menu`;
+    }
+    return `${name} — ${t} item${t === 1 ? '' : 's'} needing attention (stay requests) — open account menu`;
+  });
 
   constructor() {
     effect(() => {
@@ -75,7 +89,11 @@ export class Header {
 
   toggleAccountMenu(event: Event): void {
     event.stopPropagation();
-    this.accountMenuOpen.update((open) => !open);
+    const wasOpen = this.accountMenuOpen();
+    this.accountMenuOpen.set(!wasOpen);
+    if (!wasOpen) {
+      this.stayCounts.refresh();
+    }
   }
 
   closeAccountMenu(): void {
@@ -108,5 +126,14 @@ export class Header {
 
   onHeaderAvatarError(): void {
     this.headerAvatarBroken.set(true);
+  }
+
+  /** Used in template so ngtsc does not narrow `type` across sibling [class.*] bindings. */
+  toastIsError(toast: ToastNotification): boolean {
+    return toast.type === 'error';
+  }
+
+  toastIsInfo(toast: ToastNotification): boolean {
+    return toast.type === 'info';
   }
 }

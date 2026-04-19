@@ -56,6 +56,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'accommodations/incoming',
+    loadComponent: () =>
+      import('./features/accommodations/pages/accommodation-incoming/accommodation-incoming.page').then(
+        (m) => m.AccommodationIncomingPage,
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'accommodations/sent',
+    loadComponent: () =>
+      import('./features/accommodations/pages/accommodation-sent/accommodation-sent.page').then(
+        (m) => m.AccommodationSentPage,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'accommodations/:id/edit',
     loadComponent: () =>
       import('./features/accommodations/pages/accommodation-edit/accommodation-edit.page').then(

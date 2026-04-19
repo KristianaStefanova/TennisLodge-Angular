@@ -47,6 +47,7 @@
                 <a [routerLink]="['/accommodations', a._id, 'edit']" class="adetail__btn adetail__btn--primary"
                   >Edit listing</a
                 >
+                <a routerLink="/accommodations/incoming" class="adetail__owner-link">Stay requests</a>
                 <a routerLink="/accommodations/mine" class="adetail__owner-link">Manage all my stays</a>
               </div>
             }
@@ -103,7 +104,7 @@
                           type="button"
                           class="adetail__btn adetail__btn--primary"
                           [disabled]="requestBusy()"
-                          (click)="setRequestStatus(r._id, 'accepted')"
+                          (click)="openHostDecision(r, 'accept')"
                         >
                           Accept
                         </button>
@@ -111,7 +112,7 @@
                           type="button"
                           class="adetail__btn"
                           [disabled]="requestBusy()"
-                          (click)="setRequestStatus(r._id, 'rejected')"
+                          (click)="openHostDecision(r, 'reject')"
                         >
                           Reject
                         </button>
@@ -125,11 +126,20 @@
         } @else {
           <section class="adetail__panel adetail__panel--wide" aria-labelledby="adetail-req-guest">
             <h2 id="adetail-req-guest" class="adetail__h2">Request a stay</h2>
+            <p class="adetail__muted">
+              <a routerLink="/accommodations/sent" class="adetail__owner-link">View all requests I sent</a>
+            </p>
             @if (guestRequest(); as g) {
               <p class="adetail__p">
                 Your request: <strong>{{ g.numberOfGuests }}</strong> guest(s) —
                 <strong>{{ g.status }}</strong>
               </p>
+              @if (g.hostMessage && (g.status === 'accepted' || g.status === 'rejected')) {
+                <p class="adetail__host-note">
+                  <span class="adetail__host-note-label">Message from the host</span>
+                  {{ g.hostMessage }}
+                </p>
+              }
               @if (g.status === 'pending') {
                 <button
                   type="button"
@@ -177,4 +187,13 @@
       </article>
     }
   </div>
+
+  <app-host-stay-decision-dialog
+    [open]="decisionOpen()"
+    [mode]="decisionMode()"
+    [guestLabel]="decisionGuestLabel()"
+    [busy]="requestBusy()"
+    (confirm)="onHostDecisionConfirm($event)"
+    (cancelled)="onHostDecisionCancel()"
+  />
 </section>

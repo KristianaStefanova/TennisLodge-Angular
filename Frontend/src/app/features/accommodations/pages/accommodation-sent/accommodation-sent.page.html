@@ -1,0 +1,136 @@
+<section class="asent" aria-labelledby="asent-title">
+  <div class="container asent__inner">
+    <header class="asent__header">
+      <div>
+        <p class="asent__kicker">Travel</p>
+        <h1 id="asent-title" class="asent__title">Requests I sent</h1>
+        <p class="asent__lead">
+          Stays you asked to book. When the host responds, the status updates here — pending, accepted, or
+          rejected.
+        </p>
+      </div>
+      <div class="asent__actions">
+        <a routerLink="/accommodations" class="asent__cta asent__cta--ghost">Browse stays</a>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="asent__state" role="status">
+        <span class="asent__spinner" aria-hidden="true"></span>
+        Loading your requests…
+      </div>
+    } @else if (error(); as err) {
+      <div class="asent__alert" role="alert">{{ err }}</div>
+      <button type="button" class="asent__btn" (click)="reload()">Try again</button>
+    } @else if (rows().length === 0) {
+      <div class="asent__empty">
+        <h2 class="asent__empty-title">No requests yet</h2>
+        <p class="asent__empty-text">
+          When you request a stay at a listing, it will show up here so you can follow the host’s decision.
+        </p>
+        <a routerLink="/accommodations" class="asent__cta">Find a stay</a>
+      </div>
+    } @else {
+      <div class="asent__toolbar" role="group" aria-label="Filter requests">
+        <button
+          type="button"
+          class="asent__chip"
+          [class.asent__chip--active]="filter() === 'pending'"
+          (click)="setFilter('pending')"
+        >
+          Awaiting response
+          @if (pendingCount() > 0) {
+            <span class="asent__chip-count">{{ pendingCount() }}</span>
+          }
+        </button>
+        <button
+          type="button"
+          class="asent__chip"
+          [class.asent__chip--active]="filter() === 'all'"
+          (click)="setFilter('all')"
+        >
+          All
+        </button>
+      </div>
+
+      @if (filteredRows().length === 0) {
+        <div class="asent__empty asent__empty--soft">
+          <p class="asent__empty-single">Nothing waiting on hosts right now.</p>
+          <button type="button" class="asent__linkish" (click)="setFilter('all')">Show all requests</button>
+        </div>
+      } @else {
+        <ul class="asent__list">
+          @for (r of filteredRows(); track r._id) {
+            <li
+              class="asent__row"
+              [class.asent__row--unread]="r.guestOutcomeUnread && (r.status === 'accepted' || r.status === 'rejected')"
+            >
+              <div class="asent__row-main">
+                <p class="asent__listing">
+                  @if (listingLink(r); as link) {
+                    <a [routerLink]="link" class="asent__listing-link">{{ r.accommodation.address }}</a>
+                  } @else {
+                    <span class="asent__listing-removed">{{ r.accommodation.address || 'Listing' }}</span>
+                    <span class="asent__badge" role="status">No longer listed</span>
+                  }
+                </p>
+                <p class="asent__meta">
+                  {{ r.accommodation.city }}
+                  ·
+                  <time [attr.datetime]="r.accommodation.checkInAt.toISOString()">{{
+                    r.accommodation.checkInAt | date: 'mediumDate'
+                  }}</time>
+                  –
+                  <time [attr.datetime]="r.accommodation.checkOutAt.toISOString()">{{
+                    r.accommodation.checkOutAt | date: 'mediumDate'
+                  }}</time>
+                </p>
+                <p class="asent__guest">
+                  You requested
+                  <strong>{{ r.numberOfGuests }}</strong>
+                  guest(s)
+                  <span class="asent__dot" aria-hidden="true">·</span>
+                  <span
+                    class="asent__status"
+                    [class.asent__status--pending]="r.status === 'pending'"
+                    [class.asent__status--ok]="r.status === 'accepted'"
+                    [class.asent__status--no]="r.status === 'rejected' || r.status === 'cancelled'"
+                    >{{ r.status }}</span
+                  >
+                </p>
+                @if (r.hostMessage && (r.status === 'accepted' || r.status === 'rejected')) {
+                  <p class="asent__host-msg">
+                    <span class="asent__host-msg-label">Message from the host</span>
+                    {{ r.hostMessage }}
+                  </p>
+                }
+                <p class="asent__requested">
+                  Sent
+                  <time [attr.datetime]="r.createdAt.toISOString()">{{ r.createdAt | date: 'medium' }}</time>
+                  @if (r.status !== 'pending' && r.updatedAt.getTime() !== r.createdAt.getTime()) {
+                    · Updated
+                    <time [attr.datetime]="r.updatedAt.toISOString()">{{ r.updatedAt | date: 'medium' }}</time>
+                  }
+                </p>
+              </div>
+              <div class="asent__row-actions">
+                @if (r.status === 'pending') {
+                  <button
+                    type="button"
+                    class="asent__btn"
+                    [disabled]="requestBusy()"
+                    (click)="cancelRequest(r)"
+                  >
+                    Cancel request
+                  </button>
+                } @else if (listingLink(r); as vlink) {
+                  <a [routerLink]="vlink" class="asent__link">View listing</a>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+</section>

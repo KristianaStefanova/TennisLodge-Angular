@@ -1,17 +1,17 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Notification } from '../../shared/interfaces/notification.interface';
+import { ToastNotification } from '../../shared/interfaces/notification.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  private notificationSignal = signal<Notification | null>(null);
+  private notificationSignal = signal<ToastNotification | null>(null);
   private timeOutId: ReturnType<typeof setTimeout> | null = null;
 
-  notification = computed(() => this.notificationSignal());
+  readonly notification = computed<ToastNotification | null>(() => this.notificationSignal());
   
-  private showNotification(notification: Notification): void {
-    if(this.timeOutId) {
+  private showNotification(notification: ToastNotification): void {
+    if (this.timeOutId) {
       clearTimeout(this.timeOutId);
     }
 
@@ -31,4 +31,8 @@ export class NotificationService {
     this.showNotification({ message, type: 'error' });
   }
 
+  /** Non-destructive updates (e.g. inbox hints). */
+  showInfo(message: string): void {
+    this.showNotification({ message, type: 'info' });
+  }
 }

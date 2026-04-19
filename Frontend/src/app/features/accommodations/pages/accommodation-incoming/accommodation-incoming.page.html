@@ -1,0 +1,145 @@
+<section class="aincoming" aria-labelledby="aincoming-title">
+  <div class="container aincoming__inner">
+    <header class="aincoming__header">
+      <div>
+        <p class="aincoming__kicker">Hosting</p>
+        <h1 id="aincoming-title" class="aincoming__title">Stay requests</h1>
+        <p class="aincoming__lead">
+          Players who asked to stay at your listings. Accept or decline each request here — same as on the
+          listing page, in one place.
+        </p>
+      </div>
+      <div class="aincoming__actions">
+        <a routerLink="/accommodations/mine" class="aincoming__cta aincoming__cta--ghost">My listings</a>
+        <a routerLink="/accommodations" class="aincoming__cta aincoming__cta--ghost">Browse stays</a>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="aincoming__state" role="status">
+        <span class="aincoming__spinner" aria-hidden="true"></span>
+        Loading requests…
+      </div>
+    } @else if (error(); as err) {
+      <div class="aincoming__alert" role="alert">{{ err }}</div>
+      <button type="button" class="aincoming__btn" (click)="reload()">Try again</button>
+    } @else if (rows().length === 0) {
+      <div class="aincoming__empty">
+        <h2 class="aincoming__empty-title">No requests yet</h2>
+        <p class="aincoming__empty-text">
+          When someone requests a stay at one of your listings, it will appear here. Publish a stay to start
+          hosting.
+        </p>
+        <a routerLink="/accommodations/new" class="aincoming__cta">Publish a stay</a>
+      </div>
+    } @else {
+      <div class="aincoming__toolbar" role="group" aria-label="Filter requests">
+        <button
+          type="button"
+          class="aincoming__chip"
+          [class.aincoming__chip--active]="filter() === 'pending'"
+          (click)="setFilter('pending')"
+        >
+          Needs action
+          @if (pendingCount() > 0) {
+            <span class="aincoming__chip-count">{{ pendingCount() }}</span>
+          }
+        </button>
+        <button
+          type="button"
+          class="aincoming__chip"
+          [class.aincoming__chip--active]="filter() === 'all'"
+          (click)="setFilter('all')"
+        >
+          All
+        </button>
+      </div>
+
+      @if (filteredRows().length === 0) {
+        <div class="aincoming__empty aincoming__empty--soft">
+          <p class="aincoming__empty-single">Nothing needs your attention right now.</p>
+          <button type="button" class="aincoming__linkish" (click)="setFilter('all')">
+            Show all requests
+          </button>
+        </div>
+      } @else {
+        <ul class="aincoming__list">
+          @for (r of filteredRows(); track r._id) {
+            <li class="aincoming__row">
+              <div class="aincoming__row-main">
+                <p class="aincoming__listing">
+                  <a [routerLink]="['/accommodations', r.accommodationId]" class="aincoming__listing-link">{{
+                    r.accommodation.address
+                  }}</a>
+                </p>
+                <p class="aincoming__meta">
+                  {{ r.accommodation.city }}
+                  ·
+                  <time [attr.datetime]="r.accommodation.checkInAt.toISOString()">{{
+                    r.accommodation.checkInAt | date: 'mediumDate'
+                  }}</time>
+                  –
+                  <time [attr.datetime]="r.accommodation.checkOutAt.toISOString()">{{
+                    r.accommodation.checkOutAt | date: 'mediumDate'
+                  }}</time>
+                  · up to {{ r.accommodation.maxGuests }} guest(s) on the listing
+                </p>
+                <p class="aincoming__guest">
+                  <strong>{{ requesterLabel(r) }}</strong>
+                  asks for
+                  <strong>{{ r.numberOfGuests }}</strong>
+                  guest(s)
+                  <span class="aincoming__dot" aria-hidden="true">·</span>
+                  <span
+                    class="aincoming__status"
+                    [class.aincoming__status--pending]="r.status === 'pending'"
+                    [class.aincoming__status--ok]="r.status === 'accepted'"
+                    [class.aincoming__status--no]="r.status === 'rejected' || r.status === 'cancelled'"
+                    >{{ r.status }}</span
+                  >
+                </p>
+                <p class="aincoming__requested">
+                  Requested
+                  <time [attr.datetime]="r.createdAt.toISOString()">{{ r.createdAt | date: 'medium' }}</time>
+                </p>
+              </div>
+              @if (r.status === 'pending') {
+                <div class="aincoming__row-actions">
+                  <button
+                    type="button"
+                    class="aincoming__cta"
+                    [disabled]="requestBusy()"
+                    (click)="openDecision(r, 'accept')"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    type="button"
+                    class="aincoming__btn"
+                    [disabled]="requestBusy()"
+                    (click)="openDecision(r, 'reject')"
+                  >
+                    Reject
+                  </button>
+                </div>
+              } @else {
+                <div class="aincoming__row-actions aincoming__row-actions--done">
+                  <a [routerLink]="['/accommodations', r.accommodationId]" class="aincoming__link">View listing</a>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  <app-host-stay-decision-dialog
+    [open]="decisionOpen()"
+    [mode]="decisionMode()"
+    [guestLabel]="decisionGuestLabel()"
+    [busy]="requestBusy()"
+    (confirm)="onDecisionConfirm($event)"
+    (cancelled)="onDecisionCancel()"
+  />
+</section>

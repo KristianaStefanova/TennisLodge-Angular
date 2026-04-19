@@ -1,0 +1,62 @@
+@if (open()) {
+  <div class="hsd" aria-hidden="false">
+    <div
+      class="hsd__backdrop"
+      role="presentation"
+      tabindex="-1"
+      (click)="onBackdropClick()"
+    ></div>
+    <div
+      #panel
+      class="hsd__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="hsd-title"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 id="hsd-title" class="hsd__title">{{ title() }}</h2>
+      <p class="hsd__lead">{{ lead() }}</p>
+      @if (guestLabel()) {
+        <p class="hsd__guest">
+          Guest: <strong>{{ guestLabel() }}</strong>
+        </p>
+      }
+      <p class="hsd__confirm-ask">Are you sure you want to continue?</p>
+      <label class="hsd__field" for="hsd-message">
+        <span class="hsd__label">Message to the guest (optional, max 500 characters)</span>
+        <textarea
+          id="hsd-message"
+          class="hsd__textarea"
+          rows="4"
+          [formControl]="message"
+          [disabled]="busy()"
+          maxlength="500"
+          autocomplete="off"
+        ></textarea>
+      </label>
+      @if (message.invalid && message.touched) {
+        <p class="hsd__err" role="alert">Message is too long.</p>
+      }
+      <div class="hsd__actions">
+        <button
+          type="button"
+          class="hsd__btn hsd__btn--ghost"
+          data-hsd-initial-focus
+          [disabled]="busy()"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+        @if (mode() === 'accept') {
+          <button type="button" class="hsd__btn hsd__btn--primary" [disabled]="busy()" (click)="onConfirm()">
+            {{ busy() ? 'Sending…' : 'Accept request' }}
+          </button>
+        } @else {
+          <button type="button" class="hsd__btn hsd__btn--danger" [disabled]="busy()" (click)="onConfirm()">
+            {{ busy() ? 'Sending…' : 'Reject request' }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
