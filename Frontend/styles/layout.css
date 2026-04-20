@@ -1,10 +1,29 @@
 :root {
-  --color-brand-900: #063d2f;
-  --color-brand-800: #0a5240;
-  --color-brand-700: #0d6b52;
-  --color-brand-100: #e8f5f0;
-  --color-accent: #c5e84d;
-  --color-accent-muted: #9fb83a;
+  --color-brand-900: #1e4f3b;
+  --color-brand-800: #286349;
+  --color-brand-700: #347a59;
+  --color-brand-100: #eaf3ee;
+  --color-accent: #b7c776;
+  --color-accent-muted: #99ab5f;
+  --color-accent-soft: #cfdca5;
+
+  /* Green minimal palette (balanced) */
+  --color-green-minimal-header-1: #3f7660;
+  --color-green-minimal-header-2: #356653;
+  --color-green-minimal-header-3: #2c5645;
+  --color-green-minimal-footer-1: #3a6d58;
+  --color-green-minimal-footer-2: #315c4a;
+  --color-green-minimal-footer-3: #294d3d;
+  --color-green-minimal-home-1: #4a806a;
+  --color-green-minimal-home-2: #3d6d59;
+  --color-green-minimal-home-3: #315848;
+  --color-green-minimal-radial-a: rgba(207, 220, 165, 0.11);
+  --color-green-minimal-radial-b: rgba(183, 199, 118, 0.14);
+  --color-green-minimal-active-bg: rgba(183, 199, 118, 0.18);
+  --color-green-minimal-active-bg-soft: rgba(183, 199, 118, 0.15);
+  --color-green-minimal-toast: #3b755b;
+  --shadow-green-minimal-strong: 0 12px 34px rgba(183, 199, 118, 0.2);
+  --shadow-green-minimal-soft: 0 8px 24px rgba(183, 199, 118, 0.14);
 
   --color-surface: #f6f7f5;
   --color-surface-elevated: #ffffff;

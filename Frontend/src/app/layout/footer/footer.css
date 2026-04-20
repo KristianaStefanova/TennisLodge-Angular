@@ -5,15 +5,15 @@
 
 .site-footer {
   color: var(--color-text-inverse);
-  box-shadow: 0 -8px 32px rgba(6, 29, 24, 0.18);
+  box-shadow: 0 -8px 28px rgba(26, 61, 51, 0.08);
 }
 
 .site-footer__main {
   background: linear-gradient(
     165deg,
-    var(--color-brand-800) 0%,
-    var(--color-brand-900) 55%,
-    #052a1f 100%
+    var(--color-green-minimal-footer-1) 0%,
+    var(--color-green-minimal-footer-2) 55%,
+    var(--color-green-minimal-footer-3) 100%
   );
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -191,7 +191,7 @@
 }
 
 .site-footer__bar {
-  background: rgba(5, 42, 31, 0.98);
+  background: color-mix(in srgb, var(--color-green-minimal-footer-3) 94%, transparent);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
