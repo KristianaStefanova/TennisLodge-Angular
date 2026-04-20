@@ -1,59 +1,66 @@
-# TennisLodge
+# TennisLodge — Angular frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.5.
+This folder contains the **Angular** single-page application for **TennisLodge** (Angular CLI **21.x**).
+
+For the **Functional Guide**, prerequisites, and instructions to run the **full stack** (MongoDB, Express API, and this app), see the repository root **[`README.md`](../README.md)**.
+
+---
+
+## Prerequisites
+
+- **Node.js** and **npm** (this project declares `packageManager: "npm@11.8.0"` in `package.json`).
+
+## Install dependencies
+
+```bash
+npm install
+```
 
 ## Development server
 
-To start a local development server, run:
+The dev server uses **`proxy.conf.json`**: requests to **`/api`** and **`/uploads`** are proxied to **`http://localhost:3000`**. Start the **Backend** API first (see the root `README.md`), then:
 
 ```bash
-ng serve
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+This runs **`ng serve`**. Open **`http://localhost:4200/`** (or the URL printed in the terminal if the port is taken).
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Build
 
 ```bash
-ng generate component component-name
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Runs **`ng build`**; output goes under `dist/` (see `angular.json`).
+
+## Unit tests
 
 ```bash
-ng generate --help
+npm test
 ```
 
-## Building
+Runs **`ng test`** (Vitest per Angular 21 setup).
 
-To build the project run:
+## Watch mode (development build)
 
 ```bash
-ng build
+npm run watch
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Runs **`ng build --watch`** with the development configuration.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Project metadata
+
+- Generated with [Angular CLI](https://github.com/angular/angular-cli); CLI version **21.1.5** (see `devDependencies` in `package.json`).
+- Application project name: **`tennis-lodge`** (`angular.json`).
+
+For Angular CLI help (schematics, generators):
 
 ```bash
-ng test
+npx ng generate --help
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Additional CLI documentation: [Angular CLI overview](https://angular.dev/tools/cli).
