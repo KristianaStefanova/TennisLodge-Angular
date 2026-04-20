@@ -8,7 +8,6 @@
           Browse upcoming and ongoing events. Select a tournament for full details.
         </p>
       </div>
-      <a routerLink="/tournaments/new" class="tlist__cta">Host a tournament</a>
     </header>
 
     @if (loading$ | async) {
@@ -25,10 +24,8 @@
         <div class="tlist__empty">
           <h2 class="tlist__empty-title">No tournaments yet</h2>
           <p class="tlist__empty-text">
-            When organizers publish events, they will appear here. You can create one if you are
-            logged in.
+            When organizers publish events, they will appear here.
           </p>
-          <a routerLink="/tournaments/new" class="tlist__cta tlist__cta--ghost">Create the first tournament</a>
         </div>
       } @else {
         <ul class="tlist__grid">
@@ -43,10 +40,8 @@
       <div class="tlist__empty">
         <h2 class="tlist__empty-title">No tournaments yet</h2>
         <p class="tlist__empty-text">
-          When organizers publish events, they will appear here. You can create one if you are
-          logged in.
+          When organizers publish events, they will appear here.
         </p>
-        <a routerLink="/tournaments/new" class="tlist__cta tlist__cta--ghost">Create the first tournament</a>
       </div>
     }
   </div>

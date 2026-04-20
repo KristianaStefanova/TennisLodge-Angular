@@ -70,7 +70,7 @@
   white-space: nowrap;
 }
 
-.mini-navbar ul {
+.mini-navbar > ul {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

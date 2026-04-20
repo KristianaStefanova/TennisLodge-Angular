@@ -1,7 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TournamentItemComponent } from '../../components/tournament-item/tournament-item.component';
 import { loadTournaments } from '../../../../store/tournaments/tournament.actions';
@@ -14,7 +13,7 @@ import {
 
 @Component({
   selector: 'app-tournament-list-page',
-  imports: [RouterLink, TournamentItemComponent, AsyncPipe],
+  imports: [TournamentItemComponent, AsyncPipe],
   templateUrl: './tournament-list.page.html',
   styleUrl: './tournament-list.page.css',
 })

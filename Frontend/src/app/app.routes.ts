@@ -9,14 +9,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/home/home').then((m) => m.Home),
   },
   {
-    path: 'tournaments/new',
-    loadComponent: () =>
-      import('./features/tournaments/pages/tournament-new/tournament-new.page').then(
-        (m) => m.TournamentNewPage,
-      ),
-    canActivate: [authGuard],
-  },
-  {
     path: 'tournaments/:id',
     loadComponent: () =>
       import('./features/tournaments/pages/tournament-detail/tournament-detail-shell.page').then(
