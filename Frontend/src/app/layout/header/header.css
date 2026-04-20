@@ -462,7 +462,6 @@
   position: fixed;
   right: var(--space-4);
   bottom: var(--space-4);
-  /* Above modal overlays (e.g. host decision dialog). */
   z-index: 400;
   pointer-events: none;
 }

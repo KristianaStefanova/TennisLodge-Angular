@@ -54,7 +54,6 @@ export class Header {
   });
 
   readonly headerUserInitials = computed(() => initialsFromUser(this.auth.user()));
-  /** Avoid name `notification` in templates — clashes with the DOM `Notification` type in strict mode. */
   readonly activeToast = this.notificationService.notification;
 
   readonly accountTriggerAriaLabel = computed(() => {
@@ -128,7 +127,6 @@ export class Header {
     this.headerAvatarBroken.set(true);
   }
 
-  /** Used in template so ngtsc does not narrow `type` across sibling [class.*] bindings. */
   toastIsError(toast: ToastNotification): boolean {
     return toast.type === 'error';
   }

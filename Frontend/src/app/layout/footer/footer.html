@@ -12,18 +12,18 @@
         <nav class="site-footer__col" aria-labelledby="footer-explore-heading">
           <h2 id="footer-explore-heading" class="site-footer__heading">Explore</h2>
           <ul class="site-footer__list">
-            <li><a href="">Home</a></li>
-            <li><a href="">Tournaments</a></li>
-            <li><a href="">Accommodations</a></li>
+            <li><a href="/" (click)="navigateTo($event, '/')">Home</a></li>
+            <li><a href="/tournaments" (click)="navigateTo($event, '/tournaments')">Tournaments</a></li>
+            <li><a href="/accommodations" (click)="navigateTo($event, '/accommodations', true)">Accommodations</a></li>
           </ul>
         </nav>
 
         <nav class="site-footer__col" aria-labelledby="footer-legal-heading">
           <h2 id="footer-legal-heading" class="site-footer__heading">Legal</h2>
           <ul class="site-footer__list">
-            <li><a href="">Privacy</a></li>
-            <li><a href="">Terms</a></li>
-            <li><a href="">Cookies</a></li>
+            <li><a href="/legal/privacy" (click)="navigateTo($event, '/legal/privacy')">Privacy</a></li>
+            <li><a href="/legal/terms" (click)="navigateTo($event, '/legal/terms')">Terms</a></li>
+            <li><a href="/legal/cookies" (click)="navigateTo($event, '/legal/cookies')">Cookies</a></li>
           </ul>
         </nav>
 
@@ -46,7 +46,7 @@
         <p class="site-footer__copy">
           © {{ currentYear }} Tennis Lodge. All rights reserved.
         </p>
-        <a class="site-footer__to-top" href="#top">Back to top</a>
+        <a class="site-footer__to-top" href="#" (click)="backToTop($event)">Back to top</a>
       </div>
     </div>
   </div>

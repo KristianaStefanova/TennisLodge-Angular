@@ -31,7 +31,6 @@ export class NotificationService {
     this.showNotification({ message, type: 'error' });
   }
 
-  /** Non-destructive updates (e.g. inbox hints). */
   showInfo(message: string): void {
     this.showNotification({ message, type: 'info' });
   }

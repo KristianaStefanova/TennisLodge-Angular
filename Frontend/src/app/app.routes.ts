@@ -105,6 +105,21 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
   },
   {
+    path: 'legal/privacy',
+    loadComponent: () => import('./features/legal/legal.page').then((m) => m.LegalPage),
+    data: { documentType: 'privacy' },
+  },
+  {
+    path: 'legal/terms',
+    loadComponent: () => import('./features/legal/legal.page').then((m) => m.LegalPage),
+    data: { documentType: 'terms' },
+  },
+  {
+    path: 'legal/cookies',
+    loadComponent: () => import('./features/legal/legal.page').then((m) => m.LegalPage),
+    data: { documentType: 'cookies' },
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
     canActivate: [authGuard],

@@ -61,7 +61,6 @@ export class AccommodationRequestsApi {
       );
   }
 
-  /** Stay requests you sent as a guest (status includes pending / accepted / rejected / cancelled). */
   listSentByMe(): Observable<GuestOutgoingStayRequest[]> {
     return this.http
       .get<AccommodationRequestApiDto[]>(`${this.baseUrl}/mine`, { withCredentials: true })
@@ -89,7 +88,6 @@ export class AccommodationRequestsApi {
       .pipe(map((r) => this.toRequest(r)), catchError((err) => this.handleError(err)));
   }
 
-  /** Marks all host outcomes as seen for the current guest (clears unread badges). */
   markGuestOutcomesRead(): Observable<{ modifiedCount: number }> {
     return this.http
       .post<{ modifiedCount: number }>(

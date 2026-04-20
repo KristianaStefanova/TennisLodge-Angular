@@ -1,0 +1,28 @@
+<main class="legal-page">
+  <section class="legal-page__hero">
+    <div class="container legal-page__container">
+      <h1 class="legal-page__title">{{ document().title }}</h1>
+      <p class="legal-page__description">{{ document().description }}</p>
+      <p class="legal-page__updated">Last updated: {{ document().updatedAt }}</p>
+    </div>
+  </section>
+
+  <section class="legal-page__content">
+    <div class="container legal-page__container">
+      @for (section of document().sections; track section.heading) {
+        <article class="legal-page__section">
+          <h2 class="legal-page__heading">{{ section.heading }}</h2>
+          @for (paragraph of section.paragraphs; track paragraph) {
+            <p class="legal-page__paragraph">{{ paragraph }}</p>
+          }
+        </article>
+      }
+
+      <p class="legal-page__support">
+        Need help? Contact us at
+        <a href="mailto:hello@tennislodge.example">hello@tennislodge.example</a>
+        or go back to <a routerLink="/">home</a>.
+      </p>
+    </div>
+  </section>
+</main>
