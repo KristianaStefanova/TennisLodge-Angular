@@ -46,6 +46,28 @@
   line-height: 1.55;
 }
 
+.alist__active-filter {
+  margin-top: var(--space-4);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-text);
+}
+
+.alist__clear-filter {
+  color: var(--color-brand-800);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.alist__clear-filter:hover {
+  text-decoration: underline;
+}
+
 .alist__cta {
   display: inline-flex;
   align-items: center;

@@ -7,6 +7,14 @@
         <p class="alist__lead">
           Browse places offered by hosts. Sign in is required to view listings.
         </p>
+        @if (cityFilter$ | async; as cityFilter) {
+          @if (cityFilter) {
+            <div class="alist__active-filter">
+              <span>Showing results for: <strong>{{ cityFilter }}</strong></span>
+              <a routerLink="/accommodations" class="alist__clear-filter">Clear filter</a>
+            </div>
+          }
+        }
       </div>
       <div class="alist__header-actions">
         <a routerLink="/accommodations/mine" class="alist__cta alist__cta--ghost">My listings</a>
@@ -23,14 +31,26 @@
       <div class="alist__alert" role="alert">
         {{ error }}
       </div>
-    } @else if (accommodations$ | async; as accommodations) {
+    } @else if (filteredAccommodations$ | async; as accommodations) {
       @if (accommodations.length === 0) {
         <div class="alist__empty">
-          <h2 class="alist__empty-title">No stays yet</h2>
-          <p class="alist__empty-text">
-            When hosts publish stays, they will appear here. Create one if you would like to host.
-          </p>
-          <a routerLink="/accommodations/new" class="alist__cta alist__cta--ghost">Publish the first stay</a>
+          @if (cityFilter$ | async; as cityFilter) {
+            @if (cityFilter) {
+              <h2 class="alist__empty-title">No stays found in {{ cityFilter }}</h2>
+              <p class="alist__empty-text">
+                Try another city to discover more accommodation options.
+              </p>
+              <a routerLink="/accommodations" class="alist__cta alist__cta--ghost">See all stays</a>
+            } @else {
+              <h2 class="alist__empty-title">No stays yet</h2>
+              <p class="alist__empty-text">
+                When hosts publish stays, they will appear here. Create one if you would like to host.
+              </p>
+              <a routerLink="/accommodations/new" class="alist__cta alist__cta--ghost"
+                >Publish the first stay</a
+              >
+            }
+          }
         </div>
       } @else {
         <ul class="alist__grid">

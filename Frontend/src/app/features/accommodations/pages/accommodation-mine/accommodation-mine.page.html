@@ -64,4 +64,15 @@
       </ul>
     }
   </div>
+
+  <app-confirm-action-dialog
+    [open]="pendingDelete() !== null"
+    title="Delete accommodation listing?"
+    [description]="deleteDialogDescription()"
+    confirmLabel="Delete listing"
+    cancelLabel="Keep listing"
+    [busy]="actionId() !== null"
+    (cancelled)="cancelDelete()"
+    (confirmed)="deletePendingAccommodation()"
+  />
 </section>

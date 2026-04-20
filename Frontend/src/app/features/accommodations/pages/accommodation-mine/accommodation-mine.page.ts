@@ -7,10 +7,11 @@ import { AccommodationsApi } from '../../../../core/services/accommodations.serv
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Accommodation } from '../../../../shared/interfaces/accommodation.interface';
 import { loadAccommodations } from '../../../../store/accommodations/accommodation.actions';
+import { ConfirmActionDialogComponent } from '../../components/confirm-action-dialog/confirm-action-dialog.component';
 
 @Component({
   selector: 'app-accommodation-mine-page',
-  imports: [DatePipe, RouterLink],
+  imports: [DatePipe, RouterLink, ConfirmActionDialogComponent],
   templateUrl: './accommodation-mine.page.html',
   styleUrl: './accommodation-mine.page.css',
 })
@@ -23,6 +24,15 @@ export class AccommodationMinePage implements OnInit {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly actionId = signal<string | null>(null);
+  readonly pendingDelete = signal<Accommodation | null>(null);
+
+  deleteDialogDescription(): string {
+    const row = this.pendingDelete();
+    if (!row) {
+      return '';
+    }
+    return `Are you sure you want to remove this listing: "${row.address}"?`;
+  }
 
   ngOnInit(): void {
     this.reload();
@@ -44,10 +54,22 @@ export class AccommodationMinePage implements OnInit {
   }
 
   confirmDelete(a: Accommodation): void {
-    const ok = globalThis.confirm(
-      `Remove this listing?\n\n${a.address}\n\nIt will no longer appear in the catalog. Requests are not deleted automatically.`,
-    );
-    if (!ok) {
+    if (this.actionId()) {
+      return;
+    }
+    this.pendingDelete.set(a);
+  }
+
+  cancelDelete(): void {
+    if (this.actionId()) {
+      return;
+    }
+    this.pendingDelete.set(null);
+  }
+
+  deletePendingAccommodation(): void {
+    const a = this.pendingDelete();
+    if (!a) {
       return;
     }
     this.actionId.set(a._id);
@@ -57,10 +79,12 @@ export class AccommodationMinePage implements OnInit {
       .subscribe({
         next: () => {
           this.rows.update((list) => list.filter((x) => x._id !== a._id));
+          this.pendingDelete.set(null);
           this.store.dispatch(loadAccommodations());
           this.notification.showSuccess('Accommodation removed.');
         },
         error: (e: unknown) => {
+          this.pendingDelete.set(null);
           const msg = e instanceof Error ? e.message : 'Could not delete.';
           this.notification.showError(msg);
         },

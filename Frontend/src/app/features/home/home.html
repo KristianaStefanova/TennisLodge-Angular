@@ -1,45 +1,77 @@
 <div class="home">
   <section class="home-hero">
     <div class="container home-hero__container">
-      <div class="home-hero__content">
-        <p class="home-hero__kicker">Tennis • Tournaments • Accommodation</p>
-        <h1 class="home-hero__title">Welcome to TennisLodge</h1>
-        <p class="home-hero__lead">
-          TennisLodge is your ultimate platform connecting tennis players, families, and
-          tournaments worldwide. We make traveling to tennis tournaments more accessible and easier than ever
-          before. Whether you're a player seeking reliable tournament information and affordable accommodation, or
-          a family ready to host visiting athletes, TennisLodge simplifies every step of your journey. Find
-          trusted hosts, register for events effortlessly, and connect with a passionate tennis community. Our
-          mission is to remove the barriers of travel and lodging so every player can focus on their game. Join
-          TennisLodge today and experience a smoother, more connected tennis journey!
-        </p>
+      <div class="home-hero__main">
+        <div class="home-hero__content">
+          <p class="home-hero__kicker">Tennis • Tournaments • Accommodation</p>
+          <h1 class="home-hero__title">Welcome to TennisLodge</h1>
+          <p class="home-hero__lead">
+            TennisLodge is your ultimate platform connecting tennis players, families, and
+            tournaments worldwide. We make traveling to tennis tournaments more accessible and easier than ever
+            before. Whether you're a player seeking reliable tournament information and affordable accommodation, or
+            a family ready to host visiting athletes, TennisLodge simplifies every step of your journey. Find
+            trusted hosts, register for events effortlessly, and connect with a passionate tennis community. Our
+            mission is to remove the barriers of travel and lodging so every player can focus on their game. Join
+            TennisLodge today and experience a smoother, more connected tennis journey!
+          </p>
 
-        <div class="home-hero__actions" role="group" aria-label="Primary actions">
-          <a routerLink="/tournaments" class="home-btn home-btn--primary">Explore Tournaments</a>
-          <a routerLink="/accommodations" class="home-btn home-btn--secondary">Find Accommodation</a>
+          <div class="home-hero__actions" role="group" aria-label="Primary actions">
+            <a routerLink="/tournaments" class="home-btn home-btn--primary">Explore Tournaments</a>
+            <a routerLink="/accommodations" class="home-btn home-btn--secondary">Find Accommodation</a>
+          </div>
         </div>
       </div>
 
-      <aside class="home-hero__panel" [attr.aria-label]="auth.isAuthenticated() ? 'Your account' : 'Get started'">
-        @if (auth.isAuthenticated()) {
-          <h2 class="home-panel__title">Welcome back</h2>
-          <p class="home-panel__text">
-            Signed in as <strong class="home-panel__strong">{{ auth.user()?.username }}</strong>. Explore tournaments or plan your next trip.
-          </p>
-          <div class="home-panel__actions">
-            <a routerLink="/tournaments" class="home-btn home-btn--primary">Explore tournaments</a>
+      <div class="home-hero__search-shell" aria-label="Accommodation search">
+        <div class="home-search__intro">
+          <p class="home-search__eyebrow">Smart search</p>
+          <h2 class="home-search__title">Find accommodation by city</h2>
+        </div>
+
+        <form class="home-search__form" (ngSubmit)="onSearchSubmit()" novalidate>
+          <label class="home-search__label" for="home-city-search">City</label>
+          <div class="home-search__field-wrap">
+            <input
+              id="home-city-search"
+              type="text"
+              class="home-search__input"
+              [formControl]="cityControl"
+              placeholder="Search by city (e.g. Madrid)"
+              autocomplete="off"
+              role="combobox"
+              aria-autocomplete="list"
+              [attr.aria-expanded]="isSuggestionsOpen"
+              [attr.aria-controls]="suggestionsListId"
+              (focus)="onInputFocus()"
+              (blur)="onInputBlur()"
+              (keydown)="onInputKeydown($event)"
+            />
+            <button type="submit" class="home-search__submit">Search</button>
           </div>
-        } @else {
-          <h2 class="home-panel__title">Get started today</h2>
-          <p class="home-panel__text">
-            Create your profile, register for events, and connect with a tennis community built for real life.
-          </p>
-          <div class="home-panel__actions">
-            <a routerLink="/register" class="home-btn home-btn--cta">Register</a>
-            <a routerLink="/login" class="home-link">Login</a>
-          </div>
-        }
-      </aside>
+
+          @if (isSuggestionsOpen && filteredCities.length > 0) {
+            <ul class="home-search__suggestions" [id]="suggestionsListId" role="listbox">
+              @for (city of filteredCities; track city; let i = $index) {
+                <li role="option" [attr.aria-selected]="i === activeSuggestionIndex">
+                  <button
+                    type="button"
+                    class="home-search__suggestion"
+                    [class.home-search__suggestion--active]="i === activeSuggestionIndex"
+                    (mousedown)="onSuggestionPointerDown($event)"
+                    (click)="selectSuggestion(city)"
+                  >
+                    {{ city }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+
+          @if (searchError; as error) {
+            <p class="home-search__error" role="alert">{{ error }}</p>
+          }
+        </form>
+      </div>
     </div>
   </section>
 
