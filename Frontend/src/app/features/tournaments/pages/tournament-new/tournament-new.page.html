@@ -54,43 +54,106 @@
 
       <label
         class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentOrganizer')?.touched &&
+          tournamentForm.get('tournamentOrganizer')?.invalid
+        "
         for="tournament-input-tournamentOrganizer"
       >
         <span class="label">Organizer</span>
         <input
           id="tournament-input-tournamentOrganizer"
           class="control"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentOrganizer')?.touched &&
+            tournamentForm.get('tournamentOrganizer')?.invalid
+          "
           appInputError
           type="text"
           formControlName="tournamentOrganizer"
           autocomplete="organization"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentOrganizer')?.touched &&
+            tournamentForm.get('tournamentOrganizer')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (tournamentForm.get('tournamentOrganizer')?.touched && tournamentForm.get('tournamentOrganizer')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentOrganizer')?.hasError('required')) {
+              This field is required.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field" for="tournament-input-tournamentCategory">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentCategory')?.touched && tournamentForm.get('tournamentCategory')?.invalid
+        "
+        for="tournament-input-tournamentCategory"
+      >
         <span class="label">Category</span>
         <input
           id="tournament-input-tournamentCategory"
           class="control"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentCategory')?.touched && tournamentForm.get('tournamentCategory')?.invalid
+          "
           appInputError
           type="text"
           formControlName="tournamentCategory"
           autocomplete="off"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentCategory')?.touched && tournamentForm.get('tournamentCategory')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (tournamentForm.get('tournamentCategory')?.touched && tournamentForm.get('tournamentCategory')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentCategory')?.hasError('required')) {
+              This field is required.
+            }
+          </span>
+        }
       </label>
 
-      <label class="field" for="tournament-input-tournamentSurface">
+      <label
+        class="field"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentSurface')?.touched && tournamentForm.get('tournamentSurface')?.invalid
+        "
+        for="tournament-input-tournamentSurface"
+      >
         <span class="label">Surface</span>
         <select
           id="tournament-input-tournamentSurface"
           class="control"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentSurface')?.touched && tournamentForm.get('tournamentSurface')?.invalid
+          "
           appInputError
           formControlName="tournamentSurface"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentSurface')?.touched && tournamentForm.get('tournamentSurface')?.invalid
+              ? 'true'
+              : null
+          "
         >
           @for (opt of surfaceOptions; track opt) {
             <option [value]="opt">{{ opt }}</option>
           }
         </select>
+        @if (tournamentForm.get('tournamentSurface')?.touched && tournamentForm.get('tournamentSurface')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentSurface')?.hasError('required')) {
+              This field is required.
+            }
+          </span>
+        }
       </label>
 
       <label class="field" for="tournament-input-tournamentDirector">
@@ -156,16 +219,37 @@
         />
       </label>
 
-      <label class="field field--full" for="tournament-input-tournamentLocation">
+      <label
+        class="field field--full"
+        [class.field--invalid]="
+          tournamentForm.get('tournamentLocation')?.touched && tournamentForm.get('tournamentLocation')?.invalid
+        "
+        for="tournament-input-tournamentLocation"
+      >
         <span class="label">Venue / address</span>
         <input
           id="tournament-input-tournamentLocation"
           class="control"
+          [class.control--invalid]="
+            tournamentForm.get('tournamentLocation')?.touched && tournamentForm.get('tournamentLocation')?.invalid
+          "
           appInputError
           type="text"
           formControlName="tournamentLocation"
           autocomplete="street-address"
+          [attr.aria-invalid]="
+            tournamentForm.get('tournamentLocation')?.touched && tournamentForm.get('tournamentLocation')?.invalid
+              ? 'true'
+              : null
+          "
         />
+        @if (tournamentForm.get('tournamentLocation')?.touched && tournamentForm.get('tournamentLocation')?.invalid) {
+          <span class="field-error" role="alert">
+            @if (tournamentForm.get('tournamentLocation')?.hasError('required')) {
+              This field is required.
+            }
+          </span>
+        }
       </label>
     </div>
 

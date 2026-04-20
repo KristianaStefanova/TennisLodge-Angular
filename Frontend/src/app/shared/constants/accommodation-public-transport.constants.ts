@@ -15,7 +15,7 @@ export const PUBLIC_TRANSPORT_OPTIONS: ReadonlyArray<{ id: PublicTransportType; 
   { id: 'train', label: 'Train' },
   { id: 'bus', label: 'Bus' },
   { id: 'tram', label: 'Tram / light rail' },
-  { id: 'regional_rail', label: 'Regional rail (Cercanías, etc.)' },
+  { id: 'regional_rail', label: 'Regional rail (commuter rail, etc.)' },
   { id: 'ferry', label: 'Ferry / boat' },
   { id: 'other', label: 'Other' },
 ];

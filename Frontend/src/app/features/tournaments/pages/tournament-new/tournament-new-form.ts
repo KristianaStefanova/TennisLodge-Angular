@@ -44,15 +44,18 @@ export function createTournamentNewForm(): FormGroup<TournamentNewFormControls> 
 
   return new FormGroup<TournamentNewFormControls>({
     tournamentName: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    tournamentOrganizer: new FormControl('', { nonNullable: true }),
-    tournamentCategory: new FormControl('', { nonNullable: true }),
-    tournamentSurface: new FormControl(DEFAULT_TOURNAMENT_SURFACE, { nonNullable: true }),
+    tournamentOrganizer: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    tournamentCategory: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    tournamentSurface: new FormControl(DEFAULT_TOURNAMENT_SURFACE, {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
     tournamentDirector: new FormControl('', { nonNullable: true }),
     officialBall: new FormControl('', { nonNullable: true }),
     tournamentPrize: new FormControl('', { nonNullable: true }),
     tournamentCountry: new FormControl('', { nonNullable: true }),
     tournamentCity: new FormControl('', { nonNullable: true }),
-    tournamentLocation: new FormControl('', { nonNullable: true }),
+    tournamentLocation: new FormControl('', { nonNullable: true, validators: Validators.required }),
     tournamentStartDate: new FormControl(formatDateForDateInput(now), { nonNullable: true, validators: dateRequired }),
     tournamentEndDate: new FormControl(formatDateForDateInput(now), { nonNullable: true, validators: dateRequired }),
     entryDeadline: new FormControl(formatDateForDateInput(now), { nonNullable: true, validators: dateRequired }),

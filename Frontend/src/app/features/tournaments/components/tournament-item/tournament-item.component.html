@@ -1,6 +1,17 @@
 <article class="tcard">
   <a [routerLink]="['/tournaments', tournament()._id]" class="tcard__link">
     <div class="tcard__media">
+      @if (getCountdownMeta(tournament().tournamentStartDate); as countdown) {
+        <span
+          class="tcard__countdown-badge"
+          [class.tcard__countdown-badge--live]="countdown.tone === 'live'"
+          [class.tcard__countdown-badge--urgent]="countdown.tone === 'urgent'"
+          [class.tcard__countdown-badge--soon]="countdown.tone === 'soon'"
+          [class.tcard__countdown-badge--normal]="countdown.tone === 'normal'"
+        >
+          {{ countdown.label }}
+        </span>
+      }
       @if (tournament().tournamentImageUrl) {
         <img
           [src]="tournament().tournamentImageUrl"
@@ -19,7 +30,6 @@
     <div class="tcard__body">
       <p class="tcard__meta">
         {{ tournament().tournamentStartDate | date: 'mediumDate' }} ·
-        {{ tournament().tournamentStartDate | daysUntil: daysUntilRefresh.tick() }} ·
         {{ tournament().tournamentSurface }}
       </p>
       <h2 class="tcard__name">{{ tournament().tournamentName }}</h2>

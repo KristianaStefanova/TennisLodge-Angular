@@ -15,6 +15,17 @@
         <header class="tdetail__hero">
           @if (t.tournamentImageUrl) {
             <div class="tdetail__media">
+              @if (getCountdownMeta(t.tournamentStartDate); as countdown) {
+                <span
+                  class="tdetail__countdown-badge"
+                  [class.tdetail__countdown-badge--live]="countdown.tone === 'live'"
+                  [class.tdetail__countdown-badge--urgent]="countdown.tone === 'urgent'"
+                  [class.tdetail__countdown-badge--soon]="countdown.tone === 'soon'"
+                  [class.tdetail__countdown-badge--normal]="countdown.tone === 'normal'"
+                >
+                  {{ countdown.label }}
+                </span>
+              }
               <img
                 [src]="t.tournamentImageUrl"
                 [alt]="'Image for ' + t.tournamentName"
@@ -38,8 +49,6 @@
               <time [attr.datetime]="t.tournamentStartDate.toISOString()">
                 {{ t.tournamentStartDate | date: 'longDate' }}
               </time>
-              <span class="tdetail__dash">·</span>
-              <span class="tdetail__countdown">{{ t.tournamentStartDate | daysUntil: daysUntilRefresh.tick() }}</span>
               <span class="tdetail__dash">–</span>
               <time [attr.datetime]="t.tournamentEndDate.toISOString()">
                 {{ t.tournamentEndDate | date: 'longDate' }}

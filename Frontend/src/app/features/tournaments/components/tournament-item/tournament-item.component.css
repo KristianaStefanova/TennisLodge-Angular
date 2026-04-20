@@ -28,9 +28,70 @@
 }
 
 .tcard__media {
+  position: relative;
   aspect-ratio: 16 / 9;
   background: var(--color-brand-100);
   overflow: hidden;
+}
+
+.tcard__countdown-badge {
+  --badge-bg: color-mix(in srgb, var(--color-brand-800) 88%, black);
+  --badge-border: color-mix(in srgb, var(--color-brand-200) 38%, transparent);
+  --badge-color: #fff;
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--badge-border);
+  color: var(--badge-color);
+  background: var(--badge-bg);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--badge-bg) 45%, transparent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tcard__countdown-badge--normal {
+  --badge-bg: color-mix(in srgb, var(--color-brand-700) 88%, black);
+}
+
+.tcard__countdown-badge--soon {
+  --badge-bg: color-mix(in srgb, #ea580c 88%, black);
+  --badge-border: color-mix(in srgb, #fdba74 58%, transparent);
+}
+
+.tcard__countdown-badge--urgent {
+  --badge-bg: color-mix(in srgb, #dc2626 88%, black);
+  --badge-border: color-mix(in srgb, #fca5a5 58%, transparent);
+  animation: tcard-countdown-pulse 1.9s ease-in-out infinite;
+}
+
+.tcard__countdown-badge--live {
+  --badge-bg: color-mix(in srgb, #166534 86%, black);
+  --badge-border: color-mix(in srgb, #86efac 58%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tcard__countdown-badge--urgent {
+    animation: none;
+  }
+}
+
+@keyframes tcard-countdown-pulse {
+  0%,
+  100% {
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--badge-bg) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--badge-bg) 65%, transparent);
+  }
 }
 
 .tcard__img {

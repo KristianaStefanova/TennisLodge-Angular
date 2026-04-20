@@ -90,12 +90,73 @@
 }
 
 .tdetail__media {
+  position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
   aspect-ratio: 16 / 9;
   background: var(--color-brand-100);
+}
+
+.tdetail__countdown-badge {
+  --badge-bg: color-mix(in srgb, var(--color-brand-800) 90%, black);
+  --badge-border: color-mix(in srgb, var(--color-brand-200) 38%, transparent);
+  --badge-color: #fff;
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.15rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--badge-border);
+  color: var(--badge-color);
+  background: var(--badge-bg);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--badge-bg) 45%, transparent);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.tdetail__countdown-badge--normal {
+  --badge-bg: color-mix(in srgb, var(--color-brand-700) 90%, black);
+}
+
+.tdetail__countdown-badge--soon {
+  --badge-bg: color-mix(in srgb, #ea580c 90%, black);
+  --badge-border: color-mix(in srgb, #fdba74 58%, transparent);
+}
+
+.tdetail__countdown-badge--urgent {
+  --badge-bg: color-mix(in srgb, #dc2626 88%, black);
+  --badge-border: color-mix(in srgb, #fca5a5 58%, transparent);
+  animation: tdetail-countdown-pulse 1.85s ease-in-out infinite;
+}
+
+.tdetail__countdown-badge--live {
+  --badge-bg: color-mix(in srgb, #166534 88%, black);
+  --badge-border: color-mix(in srgb, #86efac 58%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tdetail__countdown-badge--urgent {
+    animation: none;
+  }
+}
+
+@keyframes tdetail-countdown-pulse {
+  0%,
+  100% {
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--badge-bg) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--badge-bg) 65%, transparent);
+  }
 }
 
 .tdetail__img {
