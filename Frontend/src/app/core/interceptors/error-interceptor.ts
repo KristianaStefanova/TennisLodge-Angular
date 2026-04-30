@@ -17,6 +17,12 @@ function isAccommodationsListGet(req: { method: string; url: string }): boolean 
   return req.method === 'GET' && /\/api\/accommodations$/.test(path);
 }
 
+/** Session probe used on app startup/guest routes. 401 is expected when logged out. */
+function isProfileProbeGet(req: { method: string; url: string }): boolean {
+  const path = req.url.split('?')[0];
+  return req.method === 'GET' && /\/api\/users\/profile$/.test(path);
+}
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notificationService = inject(NotificationService);
   const authService = inject(AuthService);
@@ -25,6 +31,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && isAccommodationsListGet(req)) {
+        return throwError(() => error);
+      }
+      if (error.status === 401 && isProfileProbeGet(req)) {
         return throwError(() => error);
       }
 
@@ -41,9 +50,13 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             if (isAuthEndpoint(req.url)) {
               errorMessage = error.error?.message || 'Invalid credentials. Please try again.';
             } else {
-              errorMessage = 'Session expired. Please log in again.';
-              authService.clearSession();
-              router.navigate(['/login']);
+              if (authService.isAuthenticated()) {
+                errorMessage = 'Session expired. Please log in again.';
+                authService.clearSession();
+                router.navigate(['/login']);
+              } else {
+                return throwError(() => error);
+              }
             }
             break;
           case 403:

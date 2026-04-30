@@ -10,9 +10,9 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/users';
 
-  getProfile(): Observable<User> {
-    return this.http.get<UserApiDto>(`${this.baseUrl}/profile`, { withCredentials: true }).pipe(
-      map((row) => this.toUser(row)),
+  getProfile(): Observable<User | null> {
+    return this.http.get<UserApiDto | null>(`${this.baseUrl}/profile`, { withCredentials: true }).pipe(
+      map((row) => (row ? this.toUser(row) : null)),
       catchError((err) => this.handleError(err)),
     );
   }

@@ -1,0 +1,108 @@
+<section
+  class="home-recent"
+  aria-labelledby="home-recent-title"
+  (mouseenter)="onViewportMouseEnter()"
+  (mouseleave)="onViewportMouseLeave()"
+  (focusin)="onViewportFocusIn()"
+  (focusout)="onViewportFocusOut()"
+>
+  <div class="container home-recent__container">
+    <div class="home-recent__header">
+      <div>
+        <p class="home-recent__eyebrow">Latest stays</p>
+        <h2 id="home-recent-title" class="home-recent__title">Newest accommodations</h2>
+      </div>
+
+      <div class="home-recent__actions">
+        <button
+          type="button"
+          class="home-recent__autoplay"
+          [disabled]="!canSlideRecent"
+          (click)="toggleAutoplay()"
+          [attr.aria-pressed]="autoplayEnabled"
+        >
+          Autoplay: {{ autoplayEnabled ? 'On' : 'Off' }}
+        </button>
+        <a routerLink="/accommodations" class="home-recent__see-all">See all</a>
+      </div>
+    </div>
+
+    @if (isAutoplayPaused) {
+      <p class="home-recent__paused" aria-live="polite">Autoplay paused while you interact.</p>
+    }
+
+    @if (isRecentLoading) {
+      <p class="home-recent__state" role="status" aria-live="polite">Loading recent accommodations…</p>
+    } @else if (recentError; as error) {
+      <p class="home-recent__state home-recent__state--error" role="alert">{{ error }}</p>
+    } @else if (recentAccommodations.length === 0) {
+      <p class="home-recent__state">No accommodations available yet.</p>
+    } @else {
+      <div class="home-recent__carousel">
+        @if (showLeftArrow) {
+          <button
+            type="button"
+            class="home-recent__arrow home-recent__arrow--left"
+            [disabled]="!canSlideRecent"
+            (click)="prevRecent()"
+            aria-label="Show previous accommodations"
+          >
+            ←
+          </button>
+        } @else {
+          <span class="home-recent__arrow-spacer" aria-hidden="true"></span>
+        }
+
+        <div
+          class="home-recent__viewport"
+          [style.--cards-per-view]="cardsPerView"
+          tabindex="0"
+          role="region"
+          aria-label="Recent accommodations carousel"
+          (touchstart)="onTouchStart($event)"
+          (touchend)="onTouchEnd($event)"
+          (pointerdown)="onPointerDown($event)"
+          (pointerup)="onPointerUp($event)"
+          (keydown)="onViewportKeydown($event)"
+        >
+          <div class="home-recent__track" [style.transform]="trackTransform">
+            @for (accommodation of recentAccommodations; track accommodation._id) {
+              <div class="home-recent__slide">
+                <app-accommodation-item [accommodation]="accommodation"></app-accommodation-item>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (showRightArrow) {
+          <button
+            type="button"
+            class="home-recent__arrow home-recent__arrow--right"
+            [disabled]="!canSlideRecent"
+            (click)="nextRecent()"
+            aria-label="Show more accommodations"
+          >
+            →
+          </button>
+        } @else {
+          <span class="home-recent__arrow-spacer" aria-hidden="true"></span>
+        }
+      </div>
+
+      @if (totalPages > 1) {
+        <div class="home-recent__dots" role="tablist" aria-label="Accommodation pages">
+          @for (page of pageIndexes; track page) {
+            <button
+              type="button"
+              class="home-recent__dot"
+              [class.home-recent__dot--active]="page === currentPage"
+              [attr.aria-label]="'Go to page ' + (page + 1)"
+              [attr.aria-selected]="page === currentPage"
+              (click)="goToPage(page)"
+            ></button>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>

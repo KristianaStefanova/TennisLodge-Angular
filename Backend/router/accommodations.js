@@ -8,8 +8,8 @@ const accommodationController = require('../controllers/accommodationController'
  * Do not use `GET /mine` — Express may match `/:id` first depending on path-to-regexp version.
  */
 router.get('/host/mine', auth(), accommodationController.getMine);
-router.get('/', auth(), accommodationController.getAll);
-router.get('/:id', auth(), accommodationController.getById);
+router.get('/', auth(false), accommodationController.getAll);
+router.get('/:id', auth(false), accommodationController.getById);
 router.post('/', auth(), accommodationController.create);
 router.put('/:id', auth(), accommodationController.update);
 router.delete('/:id', auth(), accommodationController.remove);

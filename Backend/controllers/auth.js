@@ -155,6 +155,9 @@ function logout(req, res) {
 }
 
 function getProfileInfo(req, res, next) {
+    if (!req.user || !req.isLogged) {
+        return res.status(200).json(null);
+    }
     const { _id: userId } = req.user;
 
     userModel.findOne({ _id: userId }, { password: 0, __v: 0 }) //finding by Id and returning without password and __v

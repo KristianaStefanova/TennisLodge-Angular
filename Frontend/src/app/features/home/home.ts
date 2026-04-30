@@ -5,10 +5,11 @@ import { Router, RouterLink } from '@angular/router';
 import { catchError, map, of, startWith } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AccommodationsService } from '../../core/services/accommodations.service';
+import { RecentAccommodationsComponent } from './components/recent-accommodations/recent-accommodations.component';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, RecentAccommodationsComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -51,18 +52,15 @@ export class Home {
       .getAll()
       .pipe(
         take(1),
-        map((rows) =>
-          this.uniqueCityLabels(
-            rows
-              .map((row) => row.city)
-              .filter((city): city is string => typeof city === 'string' && city.trim().length > 0),
-          ),
-        ),
         catchError(() => of([])),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((cities) => {
-        this.allCities = cities;
+      .subscribe((rows) => {
+        this.allCities = this.uniqueCityLabels(
+          rows
+            .map((row) => row.city)
+            .filter((city): city is string => typeof city === 'string' && city.trim().length > 0),
+        );
         this.filteredCities = this.getSuggestions(this.cityControl.value);
       });
   }
